@@ -1,0 +1,15 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    prefer_single_quotes: true
+    prefer_relative_imports: true
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    avoid_redundant_argument_values: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    unnecessary_const: true
+    unnecessary_this: true
+    cancel_subscriptions: true
+    sort_child_properties_last: true

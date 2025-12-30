@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import '../../data/repositories/auth/auth_repository.dart';
+import '../../interfaces/screens/auth/auth_view.dart';
+import '../../interfaces/screens/auth/auth_view_model.dart';
+import '../../interfaces/screens/home/home_view.dart';
+import '../../interfaces/screens/home/home_view_model.dart';
+import '../../interfaces/screens/monetization/monetization_view.dart';
+import '../../interfaces/screens/monetization/monetization_view_model.dart';
+import '../../interfaces/screens/splash/splash_view.dart';
+import '../dependencies.dart';
+import 'routes.dart';
+
+final appRouter = GoRouter(
+  initialLocation: Routes.splash,
+  debugLogDiagnostics: true,
+  redirect: _redirect,
+  refreshListenable: getIt.get<AuthRepository>(),
+  routes: [
+    GoRoute(
+      path: Routes.splash,
+      builder: (context, state) {
+        return const SplashView();
+      },
+    ),
+    GoRoute(
+      path: Routes.auth,
+      builder: (context, state) {
+        return Provider(
+          create: (_) => AuthViewModel(authRepository: getIt()),
+          dispose: (_, vm) => vm.dispose(),
+          child: const AuthView(),
+        );
+      },
+    ),
+    GoRoute(
+      path: Routes.home,
+      builder: (context, state) {
+        return ChangeNotifierProvider(
+          create: (_) => HomeViewModel(),
+          child: const HomeView(),
+        );
+      },
+      routes: [
+        GoRoute(
+          path: Routes.monetization,
+          builder: (context, state) {
+            return ChangeNotifierProvider(
+              create: (_) => MonetizationViewModel(),
+              child: const MonetizationView(),
+            );
+          },
+        ),
+      ],
+    ),
+  ],
+);
+
+String? _redirect(BuildContext context, GoRouterState state) {
+  if (state.matchedLocation == Routes.splash) {
+    return null;
+  }
+
+  if (state.matchedLocation != Routes.auth &&
+      !getIt.get<AuthRepository>().isAuthenticated) {
+    return Routes.auth;
+  }
+
+  if (state.matchedLocation == Routes.auth &&
+      getIt.get<AuthRepository>().isAuthenticated) {
+    return Routes.home;
+  }
+
+  return null;
+}

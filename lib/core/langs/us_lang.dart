@@ -1,0 +1,29 @@
+import '../../interfaces/screens/auth/lang/auth_us_lang.dart';
+import 'keys_lang.dart';
+
+abstract class UsLang {
+  static final words = <String, String>{
+    KeysLang.tryAgain: 'Try again',
+    KeysLang.appName: 'ReceivedApp',
+    KeysLang.home: 'Home',
+    KeysLang.logout: 'Logout',
+    KeysLang.appDescription: 'Best app for your receipts and payments!',
+    KeysLang.email: 'Email',
+    KeysLang.password: 'Password',
+    KeysLang.back: 'Back',
+    KeysLang.confirmPassword: 'Confirm Password',
+    KeysLang.name: 'Name',
+    KeysLang.requiredField: 'Required field',
+    KeysLang.invalidEmail: 'Invalid email',
+    KeysLang.minLength: 'Minimum of {min} characters',
+    KeysLang.passwordsDontMatch: 'Passwords dont match',
+    KeysLang.or: 'or',
+    KeysLang.cancel: 'Cancel',
+    KeysLang.confirm: 'Confirm',
+    KeysLang.themeMode: 'Theme Mode',
+    KeysLang.darkMode: 'Dark Mode',
+    KeysLang.lightMode: 'Light Mode',
+  };
+
+  static const wordsAuth = AuthUsLang;
+}
