@@ -92,13 +92,25 @@ class AuthRepositoryImpl extends AuthRepository with HttpRequestMixin {
       if (value.statusCode == 401) {
         return Result.error(AuthFailure(message: 'Credenciais inválidas'));
       }
-      _user = UserModel(
-        id: value.data['tenant']['id'],
-        name: value.data['tenant']['name'],
-        email: value.data['tenant']['email'],
-        token: value.data['token'],
-        isPremium: false, //TODO value.data['tenant']['isPremium'],
-      );
+
+      if (value.statusCode != 200) {
+        return Result.error(
+          AuthFailure(
+            message: 'Erro ao autenticar, tente novamente mais tarde',
+          ),
+        );
+      }
+
+      // _user = UserModel(
+      //   name: value.data['tenant']['name'],
+      //   email: value.data['tenant']['email'],
+      //   token: value.data['token'],
+      //   plan: value.data['tenant']['plan'],
+      //   currentPeriodEnd: DateTime.parse(
+      //     value.data['tenant']['currentPeriodEnd'],
+      //   ),
+      // );
+      _user = UserModel.fromMap(value.data);
       _saveUserLocal(_user);
 
       return const Result.ok(null);

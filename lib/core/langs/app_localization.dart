@@ -49,6 +49,10 @@ class AppLocalization {
   String get passwordsDontMatch => getWord(KeysLang.passwordsDontMatch);
   String get cancel => getWord(KeysLang.cancel);
   String get confirm => getWord(KeysLang.confirm);
+  String get free => getWord(KeysLang.free);
+  String get freeTrial => getWord(KeysLang.freeTrial);
+  String get premiumMensal => getWord(KeysLang.premiumMensal);
+  String get premiumManual => getWord(KeysLang.premiumManual);
 
   // String nameTrips(String name) => _get('nameTrips').replaceAll('{name}', name);
 }

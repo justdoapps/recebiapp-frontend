@@ -21,4 +21,8 @@ class KeysLang {
   static const themeMode = 'themeMode';
   static const darkMode = 'darkMode';
   static const lightMode = 'lightMode';
+  static const free = 'free';
+  static const freeTrial = 'freeTrial';
+  static const premiumMensal = 'premiumMensal';
+  static const premiumManual = 'premiumManual';
 }

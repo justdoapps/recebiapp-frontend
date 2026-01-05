@@ -5,6 +5,7 @@ import '../../core/dependencies.dart';
 import '../../core/extensions/build_context_extension.dart';
 import '../../core/routing/routes.dart';
 import '../../data/repositories/auth/auth_repository.dart';
+import '../../domain/enum/monetization_enum.dart';
 import 'locale_selector.dart';
 import 'theme_mode_tile.dart';
 
@@ -19,6 +20,7 @@ class AppDrawer extends StatelessWidget {
           children: [
             DrawerHeader(
               margin: .zero,
+              padding: const .only(left: 16, top: 16, right: 16, bottom: 0),
               decoration: BoxDecoration(
                 color: context.theme.colorScheme.primary,
               ),
@@ -30,7 +32,7 @@ class AppDrawer extends StatelessWidget {
                     children: [
                       Text(
                         context.words.appName,
-                        style: context.textTheme.largeBold.copyWith(
+                        style: context.textTheme.mediumBold.copyWith(
                           color: context.theme.colorScheme.onPrimary,
                         ),
                       ),
@@ -38,14 +40,39 @@ class AppDrawer extends StatelessWidget {
                   ),
                   Text(
                     getIt.get<AuthRepository>().user?.name ?? '',
-                    style: context.textTheme.small.copyWith(
+                    style: context.textTheme.verySmall.copyWith(
                       color: context.theme.colorScheme.onPrimary,
                     ),
                   ),
                   Text(
                     getIt.get<AuthRepository>().user?.email ?? '',
-                    style: context.textTheme.small.copyWith(
+                    style: context.textTheme.verySmall.copyWith(
                       color: context.theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                  Text(
+                    getIt.get<AuthRepository>().user?.plan.getPlanName(
+                          context,
+                        ) ??
+                        '',
+                    style: context.textTheme.verySmall.copyWith(
+                      color: context.theme.colorScheme.onPrimary,
+                    ),
+                  ),
+                  Visibility(
+                    visible:
+                        getIt.get<AuthRepository>().user?.plan !=
+                        MonetizationPlan.FREE,
+                    child: Text(
+                      getIt
+                              .get<AuthRepository>()
+                              .user
+                              ?.currentPeriodEnd
+                              .toIso8601String() ??
+                          '',
+                      style: context.textTheme.verySmall.copyWith(
+                        color: context.theme.colorScheme.onPrimary,
+                      ),
                     ),
                   ),
                   const Spacer(),

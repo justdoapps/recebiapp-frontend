@@ -23,6 +23,10 @@ abstract class UsLang {
     KeysLang.themeMode: 'Theme Mode',
     KeysLang.darkMode: 'Dark Mode',
     KeysLang.lightMode: 'Light Mode',
+    KeysLang.free: 'Free plan',
+    KeysLang.freeTrial: 'Free trial plan',
+    KeysLang.premiumMensal: 'Premium monthly plan',
+    KeysLang.premiumManual: 'Premium annual plan',
   };
 
   static const wordsAuth = AuthUsLang;

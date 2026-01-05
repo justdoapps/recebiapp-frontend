@@ -23,6 +23,10 @@ abstract class PtLang {
     KeysLang.themeMode: 'Aparência',
     KeysLang.darkMode: 'Modo Escuro',
     KeysLang.lightMode: 'Modo Claro',
+    KeysLang.free: 'Plano gratuito',
+    KeysLang.freeTrial: 'Plano premium teste',
+    KeysLang.premiumMensal: 'Plano premium mensal',
+    KeysLang.premiumManual: 'Plano premium anual',
   };
 
   static const wordsAuth = AuthPtLang;

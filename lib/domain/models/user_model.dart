@@ -1,36 +1,38 @@
 import 'dart:convert';
 
+import '../enum/monetization_enum.dart';
+
 class UserModel {
-  final String id;
   final String name;
   final String email;
   final String token;
-  final bool isPremium;
+  final MonetizationPlan plan;
+  final DateTime currentPeriodEnd;
   UserModel({
-    required this.id,
     required this.name,
     required this.email,
     required this.token,
-    required this.isPremium,
+    required this.plan,
+    required this.currentPeriodEnd,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'name': name,
       'email': email,
       'token': token,
-      'isPremium': isPremium,
+      'plan': plan.name,
+      'trialEndsAt': currentPeriodEnd.toIso8601String(),
     };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
       token: map['token'] as String,
-      isPremium: map['isPremium'] as bool,
+      plan: MonetizationPlan.fromString(map['plan'] as String),
+      currentPeriodEnd: DateTime.parse(map['currentPeriodEnd'] as String),
     );
   }
 
@@ -40,18 +42,18 @@ class UserModel {
       UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   UserModel copyWith({
-    String? id,
     String? name,
     String? email,
     String? token,
-    bool? isPremium,
+    MonetizationPlan? plan,
+    DateTime? currentPeriodEnd,
   }) {
     return UserModel(
-      id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       token: token ?? this.token,
-      isPremium: isPremium ?? this.isPremium,
+      plan: plan ?? this.plan,
+      currentPeriodEnd: currentPeriodEnd ?? this.currentPeriodEnd,
     );
   }
 
@@ -59,19 +61,19 @@ class UserModel {
   bool operator ==(covariant UserModel other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
-        other.name == name &&
+    return other.name == name &&
         other.email == email &&
         other.token == token &&
-        other.isPremium == isPremium;
+        other.plan == plan &&
+        other.currentPeriodEnd == currentPeriodEnd;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-        name.hashCode ^
+    return name.hashCode ^
         email.hashCode ^
         token.hashCode ^
-        isPremium.hashCode;
+        plan.hashCode ^
+        currentPeriodEnd.hashCode;
   }
 }
