@@ -43,17 +43,16 @@ final appRouter = GoRouter(
           child: const HomeView(),
         );
       },
-      routes: [
-        GoRoute(
-          path: Routes.monetization,
-          builder: (context, state) {
-            return ChangeNotifierProvider(
-              create: (_) => MonetizationViewModel(),
-              child: const MonetizationView(),
-            );
-          },
-        ),
-      ],
+      routes: [],
+    ),
+    GoRoute(
+      path: Routes.monetization,
+      builder: (context, state) {
+        return ChangeNotifierProvider(
+          create: (_) => MonetizationViewModel(repository: getIt()),
+          child: const MonetizationView(),
+        );
+      },
     ),
   ],
 );
@@ -63,13 +62,11 @@ String? _redirect(BuildContext context, GoRouterState state) {
     return null;
   }
 
-  if (state.matchedLocation != Routes.auth &&
-      !getIt.get<AuthRepository>().isAuthenticated) {
+  if (state.matchedLocation != Routes.auth && !getIt.get<AuthRepository>().isAuthenticated) {
     return Routes.auth;
   }
 
-  if (state.matchedLocation == Routes.auth &&
-      getIt.get<AuthRepository>().isAuthenticated) {
+  if (state.matchedLocation == Routes.auth && getIt.get<AuthRepository>().isAuthenticated) {
     return Routes.home;
   }
 

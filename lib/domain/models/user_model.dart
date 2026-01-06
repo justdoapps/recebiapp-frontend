@@ -22,7 +22,7 @@ class UserModel {
       'email': email,
       'token': token,
       'plan': plan.name,
-      'trialEndsAt': currentPeriodEnd.toIso8601String(),
+      'currentPeriodEnd': currentPeriodEnd.toIso8601String(),
     };
   }
 
@@ -38,8 +38,7 @@ class UserModel {
 
   String toJson() => json.encode(toMap());
 
-  factory UserModel.fromJson(String source) =>
-      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory UserModel.fromJson(String source) => UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   UserModel copyWith({
     String? name,
@@ -70,10 +69,6 @@ class UserModel {
 
   @override
   int get hashCode {
-    return name.hashCode ^
-        email.hashCode ^
-        token.hashCode ^
-        plan.hashCode ^
-        currentPeriodEnd.hashCode;
+    return name.hashCode ^ email.hashCode ^ token.hashCode ^ plan.hashCode ^ currentPeriodEnd.hashCode;
   }
 }

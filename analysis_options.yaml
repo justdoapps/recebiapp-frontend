@@ -13,3 +13,7 @@ linter:
     unnecessary_this: true
     cancel_subscriptions: true
     sort_child_properties_last: true
+
+formatter:
+  page_width: 120
+  trailing_commas: preserve

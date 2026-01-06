@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/dependencies.dart';
 import '../../core/extensions/build_context_extension.dart';
+import '../../core/extensions/formatters_extension.dart';
 import '../../core/routing/routes.dart';
 import '../../data/repositories/auth/auth_repository.dart';
 import '../../domain/enum/monetization_enum.dart';
@@ -60,16 +61,9 @@ class AppDrawer extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible:
-                        getIt.get<AuthRepository>().user?.plan !=
-                        MonetizationPlan.FREE,
+                    visible: getIt.get<AuthRepository>().user?.plan != MonetizationPlan.FREE,
                     child: Text(
-                      getIt
-                              .get<AuthRepository>()
-                              .user
-                              ?.currentPeriodEnd
-                              .toIso8601String() ??
-                          '',
+                      getIt.get<AuthRepository>().user?.currentPeriodEnd.toLocaleDayDate(context.locale) ?? '',
                       style: context.textTheme.verySmall.copyWith(
                         color: context.theme.colorScheme.onPrimary,
                       ),
@@ -108,6 +102,14 @@ class AppDrawer extends StatelessWidget {
               onTap: () {
                 context.pop();
                 context.go(Routes.home);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.monetization_on),
+              title: Text(context.words.monetizationPage),
+              onTap: () {
+                context.pop();
+                context.go(Routes.monetization);
               },
             ),
             const Expanded(

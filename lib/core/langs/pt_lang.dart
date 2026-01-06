@@ -27,6 +27,7 @@ abstract class PtLang {
     KeysLang.freeTrial: 'Plano premium teste',
     KeysLang.premiumMensal: 'Plano premium mensal',
     KeysLang.premiumManual: 'Plano premium anual',
+    KeysLang.monetizationPage: 'Assinatura do app',
   };
 
   static const wordsAuth = AuthPtLang;

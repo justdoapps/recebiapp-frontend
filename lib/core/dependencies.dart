@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/repositories/auth/auth_repository.dart';
 import '../data/repositories/auth/auth_repository_impl.dart';
+import '../data/repositories/monetization/monetization_repository.dart';
+import '../data/repositories/monetization/monetization_repository_impl.dart';
 import '../data/services/http_service.dart';
 import '../data/services/preferences_service.dart';
 
@@ -17,6 +19,9 @@ Future<void> initDependencies() async {
   //repositories
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(http: getIt(), localData: getIt()),
+  );
+  getIt.registerLazySingleton<MonetizationRepository>(
+    () => MonetizationRepositoryImpl(http: getIt()),
   );
 
   //viewmodels

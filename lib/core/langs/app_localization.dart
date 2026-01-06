@@ -44,8 +44,7 @@ class AppLocalization {
   String get or => getWord(KeysLang.or);
   String get requiredField => getWord(KeysLang.requiredField);
   String get invalidEmail => getWord(KeysLang.invalidEmail);
-  String minLength(int min) =>
-      getWord(KeysLang.minLength).replaceAll('{min}', min.toString());
+  String minLength(int min) => getWord(KeysLang.minLength).replaceAll('{min}', min.toString());
   String get passwordsDontMatch => getWord(KeysLang.passwordsDontMatch);
   String get cancel => getWord(KeysLang.cancel);
   String get confirm => getWord(KeysLang.confirm);
@@ -53,6 +52,7 @@ class AppLocalization {
   String get freeTrial => getWord(KeysLang.freeTrial);
   String get premiumMensal => getWord(KeysLang.premiumMensal);
   String get premiumManual => getWord(KeysLang.premiumManual);
+  String get monetizationPage => getWord(KeysLang.monetizationPage);
 
   // String nameTrips(String name) => _get('nameTrips').replaceAll('{name}', name);
 }
@@ -67,6 +67,5 @@ class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalization> {
   }
 
   @override
-  bool shouldReload(covariant LocalizationsDelegate<AppLocalization> old) =>
-      false;
+  bool shouldReload(covariant LocalizationsDelegate<AppLocalization> old) => false;
 }

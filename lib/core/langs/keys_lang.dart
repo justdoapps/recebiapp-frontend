@@ -25,4 +25,5 @@ class KeysLang {
   static const freeTrial = 'freeTrial';
   static const premiumMensal = 'premiumMensal';
   static const premiumManual = 'premiumManual';
+  static const monetizationPage = 'monetizationPage';
 }

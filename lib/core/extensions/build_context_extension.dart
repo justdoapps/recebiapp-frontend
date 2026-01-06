@@ -10,4 +10,5 @@ extension ThemeExtension on BuildContext {
   double get height => MediaQuery.sizeOf(this).height;
   double get width => MediaQuery.sizeOf(this).width;
   double get viewInsetsBottom => MediaQuery.viewInsetsOf(this).bottom;
+  String get locale => Localizations.localeOf(this).toString();
 }

@@ -27,6 +27,7 @@ abstract class UsLang {
     KeysLang.freeTrial: 'Free trial plan',
     KeysLang.premiumMensal: 'Premium monthly plan',
     KeysLang.premiumManual: 'Premium annual plan',
+    KeysLang.monetizationPage: 'App subscription',
   };
 
   static const wordsAuth = AuthUsLang;
