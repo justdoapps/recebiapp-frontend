@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../interfaces/screens/auth/lang/auth_pt_lang.dart';
 import '../../interfaces/screens/auth/lang/auth_us_lang.dart';
+import '../../interfaces/screens/monetization/lang/monetization_pt_lang.dart';
+import '../../interfaces/screens/monetization/lang/monetization_us_lang.dart';
 import 'keys_lang.dart';
 import 'pt_lang.dart';
 import 'us_lang.dart';
@@ -14,11 +16,11 @@ class AppLocalization {
   AppLocalization(this.locale) {
     switch (locale.languageCode) {
       case 'pt':
-        _strings = {...PtLang.words, ...AuthPtLang.words};
+        _strings = {...PtLang.words, ...AuthPtLang.words, ...MonetizationPtLang.words};
         break;
       case 'en':
       default:
-        _strings = {...UsLang.words, ...AuthUsLang.words};
+        _strings = {...UsLang.words, ...AuthUsLang.words, ...MonetizationUsLang.words};
     }
   }
 

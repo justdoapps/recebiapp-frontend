@@ -45,7 +45,8 @@ class MonetizationRepositoryImpl with HttpRequestMixin implements MonetizationRe
       },
       (value) {
         return Result.ok((
-          id: value.data['id'],
+          paymentId: value.data['paymentId'],
+          customerId: value.data['customerId'],
           clientSecret: value.data['clientSecret'],
           ephemeralKey: value.data['ephemeralKey'],
         ));
@@ -94,7 +95,8 @@ class MonetizationRepositoryImpl with HttpRequestMixin implements MonetizationRe
       },
       (value) {
         return Result.ok((
-          id: value.data['id'],
+          paymentId: value.data['paymentId'],
+          customerId: value.data['customerId'],
           clientSecret: value.data['clientSecret'],
           ephemeralKey: value.data['ephemeralKey'],
         ));

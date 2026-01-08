@@ -6,17 +6,17 @@ import '../../../core/utils/result.dart';
 import '../../../data/repositories/monetization/monetization_repository.dart';
 import '../../../domain/models/plan_model.dart';
 
-typedef MonetizationResultArgs = ({String id, String clientSecret, String ephemeralKey});
+typedef MonetizationResultArgs = ({String paymentId, String customerId, String clientSecret, String ephemeralKey});
 
 class MonetizationViewModel extends ChangeNotifier {
   final MonetizationRepository _repository;
 
   MonetizationViewModel({required MonetizationRepository repository}) : _repository = repository {
-    createSubscription = Command1<void, String>(_createSubscription);
-    createAnnualPlan = Command1<void, String>(_createAnnualPlan);
+    createSubscription = Command1<MonetizationResultArgs, String>(_createSubscription);
+    createAnnualPlan = Command1<MonetizationResultArgs, String>(_createAnnualPlan);
     getPlans = Command0<void>(_getPlans);
-    cancelSubscription = Command0<void>(_cancelSubscription);
-    uncancelSubscription = Command0<void>(_uncancelSubscription);
+    cancelSubscription = Command0<({String endsAt})>(_cancelSubscription);
+    uncancelSubscription = Command0<({String endsAt})>(_uncancelSubscription);
     getPlans.execute();
   }
 
@@ -24,79 +24,66 @@ class MonetizationViewModel extends ChangeNotifier {
   List<PlanModel> plans = [];
   String? currentPlan;
 
-  late Command1<void, String> createSubscription;
-  late Command1<void, String> createAnnualPlan;
+  late Command1<MonetizationResultArgs, String> createSubscription;
+  late Command1<MonetizationResultArgs, String> createAnnualPlan;
   late Command0<void> getPlans; //já vem com o plano vigente do tenant caso tiver
-  late Command0<void> cancelSubscription;
-  late Command0<void> uncancelSubscription;
+  late Command0<({String endsAt})> cancelSubscription;
+  late Command0<({String endsAt})> uncancelSubscription;
 
-  Future<Result<MonetizationResultArgs>> _createSubscription(String planId) async {
-    final result = await _repository.createSubscription(planId: planId);
-    return result.fold(
-      (error) {
-        _log.warning('Create Subscription falhou: $error');
-        return Result.error(error);
-      },
-      (value) {
-        return Result.ok(value);
-      },
-    );
-  }
+  Future<Result<MonetizationResultArgs>> _createSubscription(String planId) async =>
+      (await _repository.createSubscription(planId: planId)).fold(
+        (error) {
+          _log.warning('Create Subscription falhou: $error');
+          return Result.error(error);
+        },
+        (value) {
+          return Result.ok(value);
+        },
+      );
 
-  Future<Result<MonetizationResultArgs>> _createAnnualPlan(String planId) async {
-    final result = await _repository.createAnnualPlan(planId: planId);
-    return result.fold(
-      (error) {
-        _log.warning('Create Annual Plan falhou: $error');
-        return Result.error(error);
-      },
-      (value) {
-        return Result.ok(value);
-      },
-    );
-  }
+  Future<Result<MonetizationResultArgs>> _createAnnualPlan(String planId) async =>
+      (await _repository.createAnnualPlan(planId: planId)).fold(
+        (error) {
+          _log.warning('Create Annual Plan falhou: $error');
+          return Result.error(error);
+        },
+        (value) {
+          return Result.ok(value);
+        },
+      );
 
-  Future<Result<({String endsAt})>> _cancelSubscription() async {
-    final result = await _repository.cancelSubscription();
-    return result.fold(
-      (error) {
-        _log.warning('Cancel Subscription falhou: $error');
-        return Result.error(error);
-      },
-      (value) {
-        return Result.ok(value);
-      },
-    );
-  }
+  Future<Result<({String endsAt})>> _cancelSubscription() async => (await _repository.cancelSubscription()).fold(
+    (error) {
+      _log.warning('Cancel Subscription falhou: $error');
+      return Result.error(error);
+    },
+    (value) {
+      return Result.ok(value);
+    },
+  );
 
-  Future<Result<({String endsAt})>> _uncancelSubscription() async {
-    final result = await _repository.uncancelSubscription();
-    return result.fold(
-      (error) {
-        _log.warning('Uncancel Subscription falhou: $error');
-        return Result.error(error);
-      },
-      (value) {
-        return Result.ok(value);
-      },
-    );
-  }
+  Future<Result<({String endsAt})>> _uncancelSubscription() async => (await _repository.uncancelSubscription()).fold(
+    (error) {
+      _log.warning('Uncancel Subscription falhou: $error');
+      return Result.error(error);
+    },
+    (value) {
+      return Result.ok(value);
+    },
+  );
 
-  Future<Result<void>> _getPlans() async {
-    final result = await _repository.getPlans();
-    return result.fold(
-      (error) {
-        _log.warning('Get Plans falhou: $error');
-        return Result.error(error);
-      },
-      (value) {
-        plans = value.plans;
-        currentPlan = value.currentPlan;
-        notifyListeners();
-        return const Result.ok(null);
-      },
-    );
-  }
+  Future<Result<void>> _getPlans() async => (await _repository.getPlans()).fold(
+    (error) {
+      _log.warning('Get Plans falhou: $error');
+      return Result.error(error);
+    },
+    (value) {
+      plans = value.plans;
+      currentPlan = value.currentPlan;
+      notifyListeners();
+      return const Result.ok(null);
+    },
+  );
 
   @override
   void dispose() {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 
 import 'core/dependencies.dart';
@@ -16,6 +17,11 @@ void main() async {
 
   final initialTheme = getIt<PreferencesService>().getThemeMode();
   final initialLocale = getIt<PreferencesService>().getLocale();
+
+  Stripe.publishableKey =
+      'pk_test_51SikvOBNVficuVZna9RzahG3iMdESw5CPmfKFK1pmYX6W3Nr6aMm5DH1MCmj1n6svDTKmS2PJcdyvzSgVd0TzV7100lMj8T6Sk';
+  Stripe.merchantIdentifier = 'RecebiApp';
+  await Stripe.instance.applySettings();
 
   runApp(
     ChangeNotifierProvider(
@@ -36,7 +42,7 @@ class App extends StatelessWidget {
     final settingsController = context.watch<SettingsController>();
 
     return MaterialApp.router(
-      supportedLocales: const [Locale('en'), Locale('pt')],
+      supportedLocales: const [Locale('en', 'US'), Locale('pt', 'BR')],
       locale: settingsController.locale,
       localizationsDelegates: [
         AppLocalizationDelegate(),

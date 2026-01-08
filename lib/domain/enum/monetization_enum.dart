@@ -8,7 +8,8 @@ enum MonetizationPlan {
   FREE,
   FREE_TRIAL,
   PREMIUM_MENSAL,
-  PREMIUM_MANUAL;
+  PREMIUM_MANUAL
+  ;
 
   factory MonetizationPlan.fromString(String? value) {
     if (value == null) return MonetizationPlan.FREE;
