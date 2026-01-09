@@ -3,6 +3,7 @@ import 'package:logging/logging.dart';
 import '../../../core/mixins/http_request_mixin.dart';
 import '../../../core/utils/failure.dart';
 import '../../../core/utils/result.dart';
+import '../../../domain/enum/monetization_enum.dart';
 import '../../../domain/models/user_model.dart';
 import '../../services/http_service.dart';
 import '../../services/preferences_service.dart';
@@ -40,8 +41,7 @@ class AuthRepositoryImpl extends AuthRepository with HttpRequestMixin {
     final result = await _localData.getUser();
 
     result.fold(
-      (error) =>
-          _log.severe('Falha ao buscar user no SharedPreferences', error),
+      (error) => _log.severe('Falha ao buscar user no SharedPreferences', error),
       (value) {
         _user = value;
         if (value != null) {
@@ -52,11 +52,16 @@ class AuthRepositoryImpl extends AuthRepository with HttpRequestMixin {
     );
   }
 
+  @override
+  Future<void> updatePremium({required MonetizationPlan plan, required DateTime currentPeriodEnd}) async {
+    _user = _user?.copyWith(plan: plan, currentPeriodEnd: currentPeriodEnd);
+    _saveUserLocal(_user);
+  }
+
   Future<void> _saveUserLocal(UserModel? u) async {
     final result = await _localData.saveUser(u);
     result.fold(
-      (error) =>
-          _log.severe('Falha ao salvar user no SharedPreferences', error),
+      (error) => _log.severe('Falha ao salvar user no SharedPreferences', error),
       (_) => {},
     );
   }
@@ -100,16 +105,6 @@ class AuthRepositoryImpl extends AuthRepository with HttpRequestMixin {
           ),
         );
       }
-
-      // _user = UserModel(
-      //   name: value.data['tenant']['name'],
-      //   email: value.data['tenant']['email'],
-      //   token: value.data['token'],
-      //   plan: value.data['tenant']['plan'],
-      //   currentPeriodEnd: DateTime.parse(
-      //     value.data['tenant']['currentPeriodEnd'],
-      //   ),
-      // );
       _user = UserModel.fromMap(value.data);
       _saveUserLocal(_user);
 

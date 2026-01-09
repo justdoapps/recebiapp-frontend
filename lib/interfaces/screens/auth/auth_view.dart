@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/extensions/build_context_extension.dart';
+import '../../../core/extensions/dialog_extension.dart';
 import 'auth_view_model.dart';
 import 'components/forgot_password_component.dart';
 import 'components/login_component.dart';
@@ -24,11 +25,9 @@ class AuthView extends StatelessWidget {
             const SizedBox(height: 30),
             TextButton(
               onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (ctxModal) => Padding(
-                    padding: .only(bottom: ctxModal.viewInsetsBottom),
+                context.showBottomSheet(
+                  child: Padding(
+                    padding: .only(bottom: context.viewInsetsBottom),
                     child: Provider.value(
                       value: context.read<AuthViewModel>(),
                       child: const ForgotPasswordComponent(),
@@ -66,11 +65,9 @@ class AuthView extends StatelessWidget {
               height: 50,
               child: OutlinedButton(
                 onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (ctxModal) => Padding(
-                      padding: .only(bottom: ctxModal.viewInsetsBottom),
+                  context.showBottomSheet(
+                    child: Padding(
+                      padding: .only(bottom: context.viewInsetsBottom),
                       child: Provider.value(
                         value: context.read<AuthViewModel>(),
                         child: const RegisterComponent(),

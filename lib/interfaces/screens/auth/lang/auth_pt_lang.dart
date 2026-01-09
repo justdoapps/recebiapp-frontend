@@ -2,8 +2,7 @@ import 'auth_keys_lang.dart';
 
 abstract class AuthPtLang {
   static const words = <String, String>{
-    AuthKeysLang.loginServerFailed:
-        'Ocorreu um erro no servidor ao tentar entrar no app, tente novamente.',
+    AuthKeysLang.loginServerFailed: 'Ocorreu um erro no servidor ao tentar entrar no app, tente novamente.',
     AuthKeysLang.loginFailed: 'Falha ao tentar fazer login',
     AuthKeysLang.forgotPassword: 'Esqueceu a senha?',
     AuthKeysLang.sendRecoverLink: 'Enviar link de recuperação para o email',

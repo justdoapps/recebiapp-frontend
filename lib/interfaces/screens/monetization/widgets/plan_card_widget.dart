@@ -9,11 +9,13 @@ import '../lang/monetization_localization_ext.dart';
 class PlanCardWidget extends StatelessWidget {
   final PlanModel plan;
   final VoidCallback onTap;
+  final bool hasPlanActivated;
 
   const PlanCardWidget({
     super.key,
     required this.plan,
     required this.onTap,
+    this.hasPlanActivated = false,
   });
 
   @override
@@ -62,7 +64,12 @@ class PlanCardWidget extends StatelessWidget {
               style: context.textTheme.smallBold.copyWith(color: context.theme.colorScheme.surface),
             ),
             const SizedBox(height: 16),
-            AppGradientButton(onPressed: onTap, label: context.words.buy),
+            if (!hasPlanActivated) AppGradientButton(onPressed: onTap, label: context.words.buy),
+            if (hasPlanActivated)
+              AppGradientButton(
+                onPressed: onTap,
+                label: plan.interval != 'one_time' ? context.words.cancel : context.words.buyAgain,
+              ),
           ],
         ),
       ),

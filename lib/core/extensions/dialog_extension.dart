@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'build_context_extension.dart';
 
-extension DialogExtension on BuildContext {
+extension ModalsExtension on BuildContext {
   Future<bool?> showConfirmationDialog({
     String? title,
     required Widget content,
@@ -14,10 +14,10 @@ extension DialogExtension on BuildContext {
     return showDialog<bool>(
       context: this,
       barrierDismissible: barrierDismissible,
-      builder: (_) => AlertDialog(
+      builder: (_) => AlertDialog.adaptive(
         title: title != null ? Text(title) : null,
         content: Padding(
-          padding: EdgeInsets.only(top: title != null ? 0 : 16),
+          padding: .only(top: title != null ? 0 : 16),
           child: content,
         ),
         actions: [
@@ -31,6 +31,18 @@ extension DialogExtension on BuildContext {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> showBottomSheet({
+    required Widget child,
+  }) {
+    return showModalBottomSheet(
+      context: this,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      showDragHandle: true,
+      builder: (_) => child,
     );
   }
 }

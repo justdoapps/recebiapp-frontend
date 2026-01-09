@@ -28,6 +28,7 @@ class _MonetizationViewState extends State<MonetizationView> with LoadingMixin {
     _vm.getPlans.addListener(_getPlansCommand);
     _vm.createSubscription.addListener(_createSubscriptionCommand);
     _vm.createAnnualPlan.addListener(_createAnnualPlanCommand);
+    _vm.getPlans.execute();
   }
 
   @override
@@ -56,21 +57,13 @@ class _MonetizationViewState extends State<MonetizationView> with LoadingMixin {
     context.showMessage(
       title: title,
       message: message,
-      cancelLabel: context.words.cancel,
       type: MessageType.error,
-      onCancel: () {
-        _vm.createSubscription.clearResult();
-      },
     );
   }
 
   void _paymentSuccess() {
     context.showMessage(
       title: context.words.paymentSuccess,
-      actionLabel: context.words.back,
-      onAction: () {
-        _vm.createSubscription.clearResult();
-      },
     );
   }
 
@@ -82,12 +75,27 @@ class _MonetizationViewState extends State<MonetizationView> with LoadingMixin {
           customerEphemeralKeySecret: args.ephemeralKey,
           customerId: args.customerId,
           merchantDisplayName: 'RecebiApp',
-          style: context.theme.brightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light,
+          allowsDelayedPaymentMethods: true,
+          returnURL: 'flutterstripe://redirect',
+
+          // // 1. CONFIGURAÇÃO EXPLÍCITA DO GOOGLE PAY
+          // googlePay: const PaymentSheetGooglePay(
+          //   merchantCountryCode: 'BR',
+          //   currencyCode: 'BRL',
+          //   testEnv: true, // Mude para false em produção
+          // ),
+
+          // // 2. CONFIGURAÇÃO EXPLÍCITA DO APPLE PAY
+          // applePay: const PaymentSheetApplePay(
+          //   merchantCountryCode: 'BR',
+          // ),
+          // //
         ),
       );
 
       await Stripe.instance.presentPaymentSheet();
       _paymentSuccess();
+      _vm.getPlans.execute();
     } on StripeException catch (e) {
       // O usuário cancelou ou houve erro no processamento do cartão
       if (e.error.code == FailureCode.Canceled) {
@@ -97,6 +105,8 @@ class _MonetizationViewState extends State<MonetizationView> with LoadingMixin {
       }
     } catch (e) {
       if (mounted) _paymentError(title: context.words.paymentGenericError, message: e.toString());
+    } finally {
+      _vm.createSubscription.clearResult();
     }
   }
 
@@ -122,20 +132,20 @@ class _MonetizationViewState extends State<MonetizationView> with LoadingMixin {
     }
   }
 
+  bool get _hasPlanActivated => _vm.currentPlanId != null && _vm.plans.any((plan) => plan.id == _vm.currentPlanId);
+
   @override
   Widget build(BuildContext context) {
     context.watch<MonetizationViewModel>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.words.plans),
+        title: Text(_hasPlanActivated ? context.words.hasPlanActivated : context.words.plans),
       ),
       drawer: const AppDrawer(),
-      body:
-          _vm.currentPlan !=
-              null //TODO ajustar o current plan para o id do plano
+      body: _hasPlanActivated
           ? CurrentPlanWidget(
               plan: _vm.plans.firstWhere(
-                (plan) => plan.amountCents == (_vm.currentPlan! == 'PREMIUM_MENSAL' ? 1000 : 10000),
+                (plan) => plan.id == _vm.currentPlanId,
               ),
             )
           : SingleChildScrollView(
@@ -144,7 +154,7 @@ class _MonetizationViewState extends State<MonetizationView> with LoadingMixin {
                 itemBuilder: (context, index) => PlanCardWidget(
                   plan: _vm.plans[index],
                   onTap: () {
-                    if (_vm.plans[index].interval == 'ONE_TIME') {
+                    if (_vm.plans[index].interval == 'one_time') {
                       _vm.createAnnualPlan.execute(_vm.plans[index].id);
                     } else {
                       _vm.createSubscription.execute(_vm.plans[index].id);

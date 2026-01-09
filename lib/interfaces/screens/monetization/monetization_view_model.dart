@@ -3,26 +3,31 @@ import 'package:logging/logging.dart';
 
 import '../../../core/utils/command.dart';
 import '../../../core/utils/result.dart';
+import '../../../data/repositories/auth/auth_repository.dart';
 import '../../../data/repositories/monetization/monetization_repository.dart';
+import '../../../domain/enum/monetization_enum.dart';
 import '../../../domain/models/plan_model.dart';
 
 typedef MonetizationResultArgs = ({String paymentId, String customerId, String clientSecret, String ephemeralKey});
 
 class MonetizationViewModel extends ChangeNotifier {
   final MonetizationRepository _repository;
+  final AuthRepository _repAuth;
 
-  MonetizationViewModel({required MonetizationRepository repository}) : _repository = repository {
+  MonetizationViewModel({required MonetizationRepository repository, required AuthRepository repAuth})
+    : _repository = repository,
+      _repAuth = repAuth {
     createSubscription = Command1<MonetizationResultArgs, String>(_createSubscription);
     createAnnualPlan = Command1<MonetizationResultArgs, String>(_createAnnualPlan);
     getPlans = Command0<void>(_getPlans);
     cancelSubscription = Command0<({String endsAt})>(_cancelSubscription);
     uncancelSubscription = Command0<({String endsAt})>(_uncancelSubscription);
-    getPlans.execute();
   }
 
   final _log = Logger('MonetizationViewModel');
   List<PlanModel> plans = [];
-  String? currentPlan;
+  String? currentPlanId;
+  DateTime? currentPeriodEnd;
 
   late Command1<MonetizationResultArgs, String> createSubscription;
   late Command1<MonetizationResultArgs, String> createAnnualPlan;
@@ -79,11 +84,18 @@ class MonetizationViewModel extends ChangeNotifier {
     },
     (value) {
       plans = value.plans;
-      currentPlan = value.currentPlan;
+      currentPlanId = value.currentPlanId;
+      if (value.currentPeriodEnd != null) {
+        currentPeriodEnd = DateTime.parse(value.currentPeriodEnd!);
+      }
       notifyListeners();
       return const Result.ok(null);
     },
   );
+
+  void updatePremium({required MonetizationPlan plan, required DateTime currentPeriodEnd}) {
+    _repAuth.updatePremium(plan: plan, currentPeriodEnd: currentPeriodEnd);
+  }
 
   @override
   void dispose() {

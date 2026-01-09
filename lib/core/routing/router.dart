@@ -49,7 +49,7 @@ final appRouter = GoRouter(
       path: Routes.monetization,
       builder: (context, state) {
         return ChangeNotifierProvider(
-          create: (_) => MonetizationViewModel(repository: getIt()),
+          create: (_) => MonetizationViewModel(repository: getIt(), repAuth: getIt()),
           child: const MonetizationView(),
         );
       },

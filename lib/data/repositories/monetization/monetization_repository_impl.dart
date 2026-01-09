@@ -15,7 +15,7 @@ class MonetizationRepositoryImpl with HttpRequestMixin implements MonetizationRe
   final _log = Logger('MonetizationRepositoryImpl');
 
   @override
-  Future<Result<({List<PlanModel> plans, String currentPlan})>> getPlans() async {
+  Future<Result<({List<PlanModel> plans, String? currentPlanId, String? currentPeriodEnd})>> getPlans() async {
     final result = await safeRequest(request: () => _http.get('/monetization/listplans'));
 
     return result.fold(
@@ -27,7 +27,8 @@ class MonetizationRepositoryImpl with HttpRequestMixin implements MonetizationRe
         return Result.ok(
           (
             plans: (value.data['plans'] as List).map((e) => PlanModel.fromMap(e)).toList(),
-            currentPlan: value.data['currentPlan'],
+            currentPlanId: value.data['currentPlanId'],
+            currentPeriodEnd: value.data['currentPeriodEnd'],
           ),
         );
       },
@@ -44,6 +45,9 @@ class MonetizationRepositoryImpl with HttpRequestMixin implements MonetizationRe
         return Result.error(error);
       },
       (value) {
+        if (value.statusCode != 201) {
+          return Result.error(Exception(value.data['message']));
+        }
         return Result.ok((
           paymentId: value.data['paymentId'],
           customerId: value.data['customerId'],
@@ -86,7 +90,9 @@ class MonetizationRepositoryImpl with HttpRequestMixin implements MonetizationRe
 
   @override
   Future<Result<MonetizationResultArgs>> createAnnualPlan({required String planId}) async {
-    final result = await safeRequest(request: () => _http.post('/monetization/annualplan', data: {'planId': planId}));
+    final result = await safeRequest(
+      request: () => _http.post('/monetization/onetimeyearplan', data: {'planId': planId}),
+    );
 
     return result.fold(
       (error) {
@@ -94,6 +100,9 @@ class MonetizationRepositoryImpl with HttpRequestMixin implements MonetizationRe
         return Result.error(error);
       },
       (value) {
+        if (value.statusCode != 201) {
+          return Result.error(Exception(value.data['message']));
+        }
         return Result.ok((
           paymentId: value.data['paymentId'],
           customerId: value.data['customerId'],

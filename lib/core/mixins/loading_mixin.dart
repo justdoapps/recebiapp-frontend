@@ -10,7 +10,7 @@ mixin LoadingMixin<S extends StatefulWidget> on State<S> {
       builder: (_) => SafeArea(
         child: Stack(
           children: [
-            Positioned.fill(child: Container(color: Colors.black54)),
+            Positioned.fill(child: Container(color: Colors.black26)),
             const Center(child: CircularProgressIndicator.adaptive()),
           ],
         ),
