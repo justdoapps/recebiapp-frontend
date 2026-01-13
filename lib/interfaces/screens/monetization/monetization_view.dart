@@ -142,14 +142,14 @@ class _MonetizationViewState extends State<MonetizationView> with LoadingMixin {
         title: Text(_hasPlanActivated ? context.words.hasPlanActivated : context.words.plans),
       ),
       drawer: const AppDrawer(),
-      body: _hasPlanActivated
-          ? CurrentPlanWidget(
-              plan: _vm.plans.firstWhere(
-                (plan) => plan.id == _vm.currentPlanId,
-              ),
-            )
-          : SingleChildScrollView(
-              child: ListView.separated(
+      body: SafeArea(
+        child: _hasPlanActivated
+            ? CurrentPlanWidget(
+                plan: _vm.plans.firstWhere(
+                  (plan) => plan.id == _vm.currentPlanId,
+                ),
+              )
+            : ListView.separated(
                 shrinkWrap: true,
                 itemBuilder: (context, index) => PlanCardWidget(
                   plan: _vm.plans[index],
@@ -164,7 +164,7 @@ class _MonetizationViewState extends State<MonetizationView> with LoadingMixin {
                 separatorBuilder: (context, index) => const SizedBox(height: 16),
                 itemCount: _vm.plans.length,
               ),
-            ),
+      ),
     );
   }
 }

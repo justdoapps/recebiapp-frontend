@@ -49,9 +49,7 @@ class HttpService extends DioForNative {
 
   HttpService(this._localData) {
     options = BaseOptions(
-      baseUrl: kIsWeb
-          ? 'http://localhost:3000/api/v1'
-          : 'http://10.0.2.2:3000/api/v1',
+      baseUrl: kIsWeb ? 'http://localhost:3000/api/v1' : 'http://10.0.2.2:3000/api/v1',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       validateStatus: (status) => status != null && status < 500,

@@ -26,4 +26,10 @@ class KeysLang {
   static const premiumMensal = 'premiumMensal';
   static const premiumManual = 'premiumManual';
   static const monetizationPage = 'monetizationPage';
+  static const customers = 'customers';
+  static const supplier = 'supplier';
+  static const customer = 'customer';
+  static const booth = 'booth';
+  static const newData = 'newData';
+  static const editData = 'editData';
 }

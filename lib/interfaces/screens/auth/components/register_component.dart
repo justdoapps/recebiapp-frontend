@@ -20,8 +20,7 @@ class RegisterComponent extends StatefulWidget {
   State<RegisterComponent> createState() => _RegisterComponentState();
 }
 
-class _RegisterComponentState extends State<RegisterComponent>
-    with LoadingMixin {
+class _RegisterComponentState extends State<RegisterComponent> with LoadingMixin {
   late final AuthViewModel vm;
 
   final _emailEC = TextEditingController();
@@ -48,9 +47,7 @@ class _RegisterComponentState extends State<RegisterComponent>
   }
 
   void _onResultRegister() {
-    vm.register.running || vm.login.running
-        ? showGlobalLoader()
-        : hideGlobalLoader();
+    vm.register.running || vm.login.running ? showGlobalLoader() : hideGlobalLoader();
     if (vm.register.error) {
       context.showMessage(
         title: context.words.registerFailed,
@@ -134,9 +131,7 @@ class _RegisterComponentState extends State<RegisterComponent>
                     controller: _emailEC,
                     inputType: .emailAddress,
                     inputAction: .next,
-                    validator: (value) =>
-                        value.validateRequired(context) ??
-                        value.validateEmail(context),
+                    validator: (value) => value.validateRequired(context) ?? value.validateEmail(context),
                   ),
                   const SizedBox(height: 15),
                   Row(
@@ -150,11 +145,8 @@ class _RegisterComponentState extends State<RegisterComponent>
                           controller: _passwordEC,
                           inputType: .visiblePassword,
                           inputAction: .next,
-                          onSubmitted: (value) =>
-                              _confirmPasswordFN.requestFocus(),
-                          validator: (value) =>
-                              value.validateRequired(context) ??
-                              value.validateMinLength(context, 6),
+                          onSubmitted: (value) => _confirmPasswordFN.requestFocus(),
+                          validator: (value) => value.validateRequired(context) ?? value.validateMinLength(context, 6),
                         ),
                       ),
                       const SizedBox(width: 15),
@@ -169,8 +161,7 @@ class _RegisterComponentState extends State<RegisterComponent>
                           focusNode: _confirmPasswordFN,
 
                           validator: (value) =>
-                              value.validateRequired(context) ??
-                              value.validateMatch(context, _passwordEC.text),
+                              value.validateRequired(context) ?? value.validateMatch(context, _passwordEC.text),
                         ),
                       ),
                     ],

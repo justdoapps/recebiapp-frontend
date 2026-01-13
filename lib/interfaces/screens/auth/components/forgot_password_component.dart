@@ -11,8 +11,7 @@ class ForgotPasswordComponent extends StatefulWidget {
   const ForgotPasswordComponent({super.key});
 
   @override
-  State<ForgotPasswordComponent> createState() =>
-      _ForgotPasswordComponentState();
+  State<ForgotPasswordComponent> createState() => _ForgotPasswordComponentState();
 }
 
 class _ForgotPasswordComponentState extends State<ForgotPasswordComponent> {
@@ -52,9 +51,7 @@ class _ForgotPasswordComponentState extends State<ForgotPasswordComponent> {
                     inputType: .emailAddress,
                     requestFocus: true,
                     inputAction: .done,
-                    validator: (value) =>
-                        value.validateRequired(context) ??
-                        value.validateEmail(context),
+                    validator: (value) => value.validateRequired(context) ?? value.validateEmail(context),
                   ),
                 ),
                 const SizedBox(height: 20),

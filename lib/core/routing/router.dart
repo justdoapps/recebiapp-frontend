@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../data/repositories/auth/auth_repository.dart';
 import '../../interfaces/screens/auth/auth_view.dart';
 import '../../interfaces/screens/auth/auth_view_model.dart';
+import '../../interfaces/screens/customer/customer_view.dart';
+import '../../interfaces/screens/customer/customer_view_model.dart';
 import '../../interfaces/screens/home/home_view.dart';
 import '../../interfaces/screens/home/home_view_model.dart';
 import '../../interfaces/screens/monetization/monetization_view.dart';
@@ -51,6 +53,15 @@ final appRouter = GoRouter(
         return ChangeNotifierProvider(
           create: (_) => MonetizationViewModel(repository: getIt(), repAuth: getIt()),
           child: const MonetizationView(),
+        );
+      },
+    ),
+    GoRoute(
+      path: Routes.customer,
+      builder: (context, state) {
+        return ChangeNotifierProvider(
+          create: (_) => CustomerViewModel(repository: getIt(), listCustomersUseCase: getIt()),
+          child: const CustomerView(),
         );
       },
     ),

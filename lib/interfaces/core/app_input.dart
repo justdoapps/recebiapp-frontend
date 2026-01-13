@@ -18,6 +18,7 @@ class AppInput extends StatefulWidget {
     this.onSubmitted,
     this.inputFormatters,
     this.requestFocus = false,
+    this.lines,
   });
 
   final String label;
@@ -32,6 +33,7 @@ class AppInput extends StatefulWidget {
   final void Function(String)? onSubmitted;
   final bool requestFocus;
   final List<TextInputFormatter>? inputFormatters;
+  final int? lines;
 
   @override
   State<AppInput> createState() => _AppInputState();
@@ -74,6 +76,8 @@ class _AppInputState extends State<AppInput> {
         onFieldSubmitted: widget.onSubmitted,
         focusNode: _focusNode,
         inputFormatters: widget.inputFormatters,
+        maxLines: widget.lines ?? 1,
+        minLines: 1,
         decoration: InputDecoration(
           errorStyle: context.textTheme.errorForm,
           labelText: widget.label,

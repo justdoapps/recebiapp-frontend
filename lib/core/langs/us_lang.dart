@@ -28,6 +28,12 @@ abstract class UsLang {
     KeysLang.premiumMensal: 'Premium monthly plan',
     KeysLang.premiumManual: 'Premium annual plan',
     KeysLang.monetizationPage: 'App subscription',
+    KeysLang.customers: 'Customers',
+    KeysLang.supplier: 'Supplier',
+    KeysLang.customer: 'Customer',
+    KeysLang.booth: 'Customer and Supplier',
+    KeysLang.newData: 'New',
+    KeysLang.editData: 'Edit',
   };
 
   static const wordsAuth = AuthUsLang;

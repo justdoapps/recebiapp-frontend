@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../interfaces/screens/auth/lang/auth_pt_lang.dart';
 import '../../interfaces/screens/auth/lang/auth_us_lang.dart';
+import '../../interfaces/screens/customer/lang/customer_pt_lang.dart';
+import '../../interfaces/screens/customer/lang/customer_us_lang.dart';
 import '../../interfaces/screens/monetization/lang/monetization_pt_lang.dart';
 import '../../interfaces/screens/monetization/lang/monetization_us_lang.dart';
 import 'keys_lang.dart';
@@ -16,11 +18,11 @@ class AppLocalization {
   AppLocalization(this.locale) {
     switch (locale.languageCode) {
       case 'pt':
-        _strings = {...PtLang.words, ...AuthPtLang.words, ...MonetizationPtLang.words};
+        _strings = {...PtLang.words, ...AuthPtLang.words, ...MonetizationPtLang.words, ...CustomerPtLang.words};
         break;
       case 'en':
       default:
-        _strings = {...UsLang.words, ...AuthUsLang.words, ...MonetizationUsLang.words};
+        _strings = {...UsLang.words, ...AuthUsLang.words, ...MonetizationUsLang.words, ...CustomerUsLang.words};
     }
   }
 
@@ -55,6 +57,12 @@ class AppLocalization {
   String get premiumMensal => getWord(KeysLang.premiumMensal);
   String get premiumManual => getWord(KeysLang.premiumManual);
   String get monetizationPage => getWord(KeysLang.monetizationPage);
+  String get customers => getWord(KeysLang.customers);
+  String get supplier => getWord(KeysLang.supplier);
+  String get customer => getWord(KeysLang.customer);
+  String get booth => getWord(KeysLang.booth);
+  String get newData => getWord(KeysLang.newData);
+  String get editData => getWord(KeysLang.editData);
 
   // String nameTrips(String name) => _get('nameTrips').replaceAll('{name}', name);
 }

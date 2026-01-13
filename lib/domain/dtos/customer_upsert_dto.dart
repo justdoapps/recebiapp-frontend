@@ -1,52 +1,59 @@
-import 'dart:convert';
+import '../enum/customer_type_enum.dart';
 
 class CustomerUpdateDto {
+  final String id;
   final String? name;
   final String? observation;
   final String? phone;
-  final String? timezone;
   final bool? active;
+  final CustomerType? type;
+  final String? document;
 
   CustomerUpdateDto({
+    required this.id,
     this.name,
     this.observation,
     this.phone,
-    this.timezone,
     this.active,
+    this.type,
+    this.document,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toBodyRequest() {
     return <String, dynamic>{
-      'name': name,
-      'observation': observation,
-      'phone': phone,
-      'timezone': timezone,
-      'active': active,
+      if (name != null) 'name': name,
+      if (observation != null) 'observation': observation,
+      if (phone != null) 'phone': phone,
+      if (active != null) 'active': active,
+      if (type != null) 'type': type!.name,
+      if (document != null) 'document': document,
     };
   }
-
-  factory CustomerUpdateDto.fromMap(Map<String, dynamic> map) {
-    return CustomerUpdateDto(
-      name: map['name'] as String?,
-      observation: map['observation'] as String?,
-      phone: map['phone'] as String?,
-      timezone: map['timezone'] as String?,
-      active: map['active'] as bool?,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory CustomerUpdateDto.fromJson(String source) =>
-      CustomerUpdateDto.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
-class CustomerCreateDto extends CustomerUpdateDto {
+class CustomerCreateDto {
+  final String name;
+  final String? observation;
+  final String? phone;
+  final CustomerType type;
+  final String? document;
+
   CustomerCreateDto({
-    required String super.name,
-    super.observation,
-    super.phone,
-    required String super.timezone,
-    super.active = true,
+    required this.name,
+    this.observation,
+    this.phone,
+    required this.type,
+    this.document,
   });
+
+  Map<String, dynamic> toBodyRequest() {
+    return <String, dynamic>{
+      'name': name,
+      if (observation != null) 'observation': observation,
+      if (phone != null) 'phone': phone,
+      'active': true,
+      'type': type.name,
+      if (document != null) 'document': document,
+    };
+  }
 }

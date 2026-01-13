@@ -104,6 +104,7 @@ class AppDrawer extends StatelessWidget {
                 context.go(Routes.home);
               },
             ),
+
             ListTile(
               leading: const Icon(Icons.monetization_on),
               title: Text(context.words.monetizationPage),
@@ -112,6 +113,16 @@ class AppDrawer extends StatelessWidget {
                 context.go(Routes.monetization);
               },
             ),
+
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: Text(context.words.booth),
+              onTap: () {
+                context.pop();
+                context.go(Routes.customer);
+              },
+            ),
+
             const Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,

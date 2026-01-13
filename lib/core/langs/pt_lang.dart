@@ -28,6 +28,12 @@ abstract class PtLang {
     KeysLang.premiumMensal: 'Plano premium mensal',
     KeysLang.premiumManual: 'Plano premium anual',
     KeysLang.monetizationPage: 'Assinatura do app',
+    KeysLang.customers: 'Clientes',
+    KeysLang.supplier: 'Fornecedor',
+    KeysLang.customer: 'Cliente',
+    KeysLang.booth: 'Cliente e Fornecedor',
+    KeysLang.newData: 'Novo',
+    KeysLang.editData: 'Editar',
   };
 
   static const wordsAuth = AuthPtLang;
