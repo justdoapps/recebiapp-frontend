@@ -21,6 +21,7 @@ abstract final class AppTheme {
     textTheme: AppTexts.textTheme,
     inputDecorationTheme: _inputDecorationTheme,
     appBarTheme: _appBarTheme,
+    navigationDrawerTheme: _navigationDrawerTheme,
   );
 
   static const _inputDecorationTheme = InputDecorationTheme(
@@ -38,4 +39,8 @@ abstract final class AppTheme {
   );
 
   static const _appBarTheme = AppBarTheme(centerTitle: true);
+
+  static const _navigationDrawerTheme = NavigationDrawerThemeData(
+    tileHeight: 45,
+  );
 }

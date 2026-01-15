@@ -31,9 +31,11 @@ abstract class UsLang {
     KeysLang.customers: 'Customers',
     KeysLang.supplier: 'Supplier',
     KeysLang.customer: 'Customer',
-    KeysLang.booth: 'Customer and Supplier',
+    KeysLang.all: 'All',
     KeysLang.newData: 'New',
     KeysLang.editData: 'Edit',
+    KeysLang.createdAt: 'Created at',
+    KeysLang.updatedAt: 'Updated at',
   };
 
   static const wordsAuth = AuthUsLang;

@@ -15,5 +15,12 @@ abstract class CustomerUsLang {
     CustomerKeysLang.customerCreated: 'Customer created successfully',
     CustomerKeysLang.errorUpdateCustomer: 'Error updating customer',
     CustomerKeysLang.customerUpdated: 'Customer updated successfully',
+    CustomerKeysLang.active: 'Active',
+    CustomerKeysLang.inactive: 'Inactive',
+    CustomerKeysLang.deactivate: 'Deactivate',
+    CustomerKeysLang.activate: 'Activate',
+    CustomerKeysLang.customerAndSupplier: 'Customer and Supplier',
+    CustomerKeysLang.both: 'Both',
+    CustomerKeysLang.searchCustomers: 'Name, phone or document',
   };
 }

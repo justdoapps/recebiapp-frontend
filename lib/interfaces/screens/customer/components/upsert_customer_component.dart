@@ -46,8 +46,8 @@ class _UpsertCustomerComponentState extends State<UpsertCustomerComponent> with 
       _observationEC.text = widget.customer!.observation ?? '';
 
       final type = widget.customer!.type;
-      _isSupplier = type == CustomerType.SUPPLIER || type == CustomerType.BOOTH;
-      _isCustomer = type == CustomerType.CUSTOMER || type == CustomerType.BOOTH;
+      _isSupplier = type == CustomerType.SUPPLIER || type == CustomerType.BOTH;
+      _isCustomer = type == CustomerType.CUSTOMER || type == CustomerType.BOTH;
     }
 
     _vm.createCustomer.addListener(_onCreateListener);
@@ -90,7 +90,7 @@ class _UpsertCustomerComponentState extends State<UpsertCustomerComponent> with 
   }
 
   CustomerType _getSelectedType() {
-    if (_isSupplier && _isCustomer) return CustomerType.BOOTH;
+    if (_isSupplier && _isCustomer) return CustomerType.BOTH;
     if (_isSupplier) return CustomerType.SUPPLIER;
     return CustomerType.CUSTOMER;
   }

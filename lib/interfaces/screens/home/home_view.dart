@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/extensions/dialog_extension.dart';
-import '../../core/adaptive_app_bar.dart';
 import '../../core/adaptive_date_picker.dart';
 import '../../core/app_drawer.dart';
 
@@ -18,8 +17,12 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AdaptiveAppBar(title: 'Home'),
+      appBar: AppBar(title: const Text('Home')),
       drawer: const AppDrawer(),
+      persistentFooterButtons: [
+        TextButton(onPressed: () {}, child: const Text('Cancelar')),
+        FilledButton(onPressed: () {}, child: const Text('Salvar')),
+      ],
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

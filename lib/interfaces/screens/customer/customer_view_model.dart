@@ -4,6 +4,7 @@ import '../../../core/utils/command.dart';
 import '../../../core/utils/result.dart';
 import '../../../data/repositories/customer/customer_repository.dart';
 import '../../../domain/dtos/customer_upsert_dto.dart';
+import '../../../domain/enum/customer_type_enum.dart';
 import '../../../domain/models/customer_model.dart';
 import '../../../domain/use_cases/list_customers_use_case.dart';
 
@@ -22,21 +23,51 @@ class CustomerViewModel extends ChangeNotifier {
     toggleStatus = Command1<void, CustomerModel>(_toggleStatus);
   }
 
-  final List<CustomerModel> _customers = [];
+  List<CustomerModel> _allCustomers = [];
+  List<CustomerModel> _filteredCustomers = [];
+  List<CustomerModel> get customers => List.unmodifiable(_filteredCustomers);
+  List<CustomerModel> get typeCustomer => List.unmodifiable(
+    _filteredCustomers.where((e) => e.type == CustomerType.CUSTOMER || e.type == CustomerType.BOTH).toList(),
+  );
+  List<CustomerModel> get typeSupplier => List.unmodifiable(
+    _filteredCustomers.where((e) => e.type == CustomerType.SUPPLIER || e.type == CustomerType.BOTH).toList(),
+  );
+  List<CustomerModel> get typeBoth =>
+      List.unmodifiable(_filteredCustomers.where((e) => e.type == CustomerType.BOTH).toList());
 
-  List<CustomerModel> get customers => _customers;
+  String _filterString = '';
+
+  void filterCustomers({String query = ''}) {
+    _filteredCustomers.clear();
+    _filteredCustomers = List<CustomerModel>.from(_allCustomers);
+    if (query.isNotEmpty) {
+      _filteredCustomers = _filteredCustomers
+          .where(
+            (c) =>
+                c.name.toLowerCase().contains(query.toLowerCase()) ||
+                (c.document?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
+                (c.phone?.toLowerCase().contains(query.toLowerCase()) ?? false),
+          )
+          .toList();
+    }
+
+    _filterString = query;
+    notifyListeners();
+  }
 
   late Command0<void> listCustomers;
   late Command1<void, CustomerCreateDto> createCustomer;
   late Command1<void, CustomerUpdateDto> updateCustomer;
   late Command1<void, CustomerModel> toggleStatus;
 
+  //TODO fazer a tela de detalhes do cliente (transactions e recurrences) e um relatorio
+
   Future<Result<void>> _listCustomers() async => (await _listCustomersUseCase.getAll()).fold(
     (error) => Result.error(error),
     (value) {
-      _customers.clear();
-      _customers.addAll(value);
-      notifyListeners();
+      _allCustomers.clear();
+      _allCustomers = List<CustomerModel>.from(value);
+      filterCustomers(query: _filterString);
       return const Result.ok(null);
     },
   );

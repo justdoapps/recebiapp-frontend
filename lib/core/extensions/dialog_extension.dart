@@ -5,7 +5,7 @@ import 'build_context_extension.dart';
 
 extension ModalsExtension on BuildContext {
   Future<bool?> showConfirmationDialog({
-    String? title,
+    Widget? title,
     required Widget content,
     String? confirmText,
     String? cancelText,
@@ -14,8 +14,10 @@ extension ModalsExtension on BuildContext {
     return showDialog<bool>(
       context: this,
       barrierDismissible: barrierDismissible,
+
       builder: (_) => AlertDialog.adaptive(
-        title: title != null ? Text(title) : null,
+        iconColor: theme.colorScheme.onSurface,
+        title: title,
         content: Padding(
           padding: .only(top: title != null ? 0 : 16),
           child: content,
@@ -28,6 +30,28 @@ extension ModalsExtension on BuildContext {
           TextButton(
             onPressed: () => pop(true),
             child: Text(confirmText ?? words.confirm),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<bool?> showInformationDialog({
+    Widget? title,
+    required Widget content,
+  }) {
+    return showDialog<bool>(
+      context: this,
+      builder: (_) => AlertDialog.adaptive(
+        title: title,
+        content: Padding(
+          padding: .only(top: title != null ? 0 : 16),
+          child: content,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => pop(),
+            child: Text(words.back),
           ),
         ],
       ),

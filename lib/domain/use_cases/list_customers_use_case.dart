@@ -1,5 +1,6 @@
 import '../../core/utils/result.dart';
 import '../../data/repositories/customer/customer_repository.dart';
+import '../enum/customer_type_enum.dart';
 import '../models/customer_model.dart';
 
 class ListCustomersUseCase {
@@ -15,12 +16,14 @@ class ListCustomersUseCase {
     return await _repository.getAll(fromCache: true);
   }
 
-  Future<Result<List<CustomerModel>>> getFromCacheWithoutInactive() async {
+  Future<Result<List<CustomerModel>>> getFromCacheWithoutInactive({CustomerType? type}) async {
     final result = await _repository.getAll(fromCache: true);
     return result.fold(
       (err) => Result.error(err),
       (value) {
-        final list = value.where((e) => e.active).toList();
+        final list = value
+            .where((e) => e.active && (type != null ? e.type == type || e.type == CustomerType.BOTH : true))
+            .toList();
         list.sort((a, b) => a.name.compareTo(b.name));
         return Result.ok(list);
       },

@@ -60,9 +60,11 @@ class AppLocalization {
   String get customers => getWord(KeysLang.customers);
   String get supplier => getWord(KeysLang.supplier);
   String get customer => getWord(KeysLang.customer);
-  String get booth => getWord(KeysLang.booth);
+  String get all => getWord(KeysLang.all);
   String get newData => getWord(KeysLang.newData);
   String get editData => getWord(KeysLang.editData);
+  String get createdAt => getWord(KeysLang.createdAt);
+  String get updatedAt => getWord(KeysLang.updatedAt);
 
   // String nameTrips(String name) => _get('nameTrips').replaceAll('{name}', name);
 }

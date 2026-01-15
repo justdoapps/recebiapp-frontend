@@ -3,11 +3,12 @@
 import 'package:flutter/material.dart';
 
 import '../../core/extensions/build_context_extension.dart';
+import '../../interfaces/screens/customer/lang/customer_localization_ext.dart';
 
 enum CustomerType {
   SUPPLIER,
   CUSTOMER,
-  BOOTH
+  BOTH
   ;
 
   factory CustomerType.fromString(String? value) {
@@ -27,8 +28,8 @@ enum CustomerType {
         return context.words.supplier;
       case CustomerType.CUSTOMER:
         return context.words.customer;
-      case CustomerType.BOOTH:
-        return context.words.booth;
+      case CustomerType.BOTH:
+        return context.words.customerAndSupplier;
     }
   }
 }

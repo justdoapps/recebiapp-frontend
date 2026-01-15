@@ -31,9 +31,11 @@ abstract class PtLang {
     KeysLang.customers: 'Clientes',
     KeysLang.supplier: 'Fornecedor',
     KeysLang.customer: 'Cliente',
-    KeysLang.booth: 'Cliente e Fornecedor',
+    KeysLang.all: 'Todos',
     KeysLang.newData: 'Novo',
     KeysLang.editData: 'Editar',
+    KeysLang.createdAt: 'Criado em',
+    KeysLang.updatedAt: 'Atualizado em',
   };
 
   static const wordsAuth = AuthPtLang;
