@@ -8,6 +8,10 @@ class DioFailure extends Failure {
   DioFailure({super.message});
 }
 
+class StatusCodeFailure extends Failure {
+  StatusCodeFailure({super.message});
+}
+
 class GenericFailure extends Failure {
   GenericFailure({super.message});
 }

@@ -13,7 +13,7 @@ import '../../core/app_search_bar.dart';
 import 'components/upsert_customer_component.dart';
 import 'customer_view_model.dart';
 import 'lang/customer_localization_ext.dart';
-import 'widgets/customer_card_widget.dart';
+import 'widgets/customer_list_widget.dart';
 
 class CustomerView extends StatefulWidget {
   const CustomerView({super.key});
@@ -60,30 +60,6 @@ class _CustomerViewState extends State<CustomerView> with LoadingMixin {
     }
   }
 
-  Widget _buildCustomerList(CustomerType? type) {
-    final customers = switch (type) {
-      CustomerType.CUSTOMER => _vm.typeCustomer,
-      CustomerType.SUPPLIER => _vm.typeSupplier,
-      CustomerType.BOTH => _vm.typeBoth,
-      null => _vm.customers,
-    };
-    return customers.isEmpty
-        ? Center(
-            child: Text(context.words.noCustomersFound, style: context.textTheme.large),
-          )
-        : ListView.separated(
-            padding: const EdgeInsets.only(bottom: 80),
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return CustomerCardWidget(customer: customers[index], vm: _vm);
-            },
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-            itemCount: customers.length,
-          );
-  }
-
   @override
   Widget build(BuildContext context) {
     final tabs = [context.words.all, context.words.customer, context.words.supplier, context.words.both];
@@ -121,33 +97,35 @@ class _CustomerViewState extends State<CustomerView> with LoadingMixin {
           onRefresh: () => _vm.listCustomers.execute(),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: Consumer<CustomerViewModel>(
-              builder: (_, _, _) {
+            child: ListenableBuilder(
+              listenable: _vm,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: AppSearchBar(
+                  hintText: context.words.searchCustomers,
+                  onChanged: (value) => _searchDebouncer.run(() => _vm.filterCustomers(query: value)),
+                  onClear: () {
+                    _clearThrottler.run(() {
+                      _searchEC.clear();
+                      _searchDebouncer.cancel();
+                      _vm.filterCustomers();
+                    });
+                  },
+                  controller: _searchEC,
+                ),
+              ),
+              builder: (_, child) {
                 return Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: AppSearchBar(
-                        hintText: context.words.searchCustomers,
-                        onChanged: (value) => _searchDebouncer.run(() => _vm.filterCustomers(query: value)),
-                        onClear: () {
-                          _clearThrottler.run(() {
-                            _searchEC.clear();
-                            _searchDebouncer.cancel();
-                            _vm.filterCustomers();
-                          });
-                        },
-                        controller: _searchEC,
-                      ),
-                    ),
+                    child!,
                     Expanded(
                       child: TabBarView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         children: [
-                          _buildCustomerList(null),
-                          _buildCustomerList(CustomerType.CUSTOMER),
-                          _buildCustomerList(CustomerType.SUPPLIER),
-                          _buildCustomerList(CustomerType.BOTH),
+                          CustomerListWidget(vm: _vm),
+                          CustomerListWidget(vm: _vm, type: CustomerType.CUSTOMER),
+                          CustomerListWidget(vm: _vm, type: CustomerType.SUPPLIER),
+                          CustomerListWidget(vm: _vm, type: CustomerType.BOTH),
                         ],
                       ),
                     ),

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../core/extensions/dialog_extension.dart';
-import '../../core/adaptive_date_picker.dart';
+import '../../../core/extensions/build_context_extension.dart';
+import '../../../core/extensions/message_extension.dart';
+import '../../../core/mixins/loading_mixin.dart';
+import '../../../core/utils/debouncer.dart';
+import '../../../core/utils/throttler.dart';
 import '../../core/app_drawer.dart';
+import 'home_view_model.dart';
+import 'widgets/home_list_transactions_widget.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -11,41 +17,63 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
-  DateTime _selectedDate = DateTime.now();
+class _HomeViewState extends State<HomeView> with LoadingMixin {
+  late final HomeViewModel _vm;
+  final TextEditingController _searchEC = TextEditingController();
+  final Debouncer _searchDebouncer = Debouncer(const Duration(milliseconds: 300));
+  final Throttler _clearThrottler = Throttler(const Duration(milliseconds: 500));
+
+  @override
+  void initState() {
+    super.initState();
+    _vm = context.read<HomeViewModel>();
+    _vm.listTransactions.addListener(_listenerCommandList);
+    _vm.listTransactions.execute();
+  }
+
+  @override
+  void dispose() {
+    _vm.listTransactions.removeListener(_listenerCommandList);
+    _searchEC.dispose();
+    _searchDebouncer.cancel();
+    _clearThrottler.cancel();
+    super.dispose();
+  }
+
+  void _listenerCommandList() {
+    _vm.listTransactions.running ? showGlobalLoader() : hideGlobalLoader();
+    if (_vm.listTransactions.error) {
+      context.showMessage(
+        title: context.words.errorGetTransactions,
+        actionLabel: context.words.tryAgain,
+        onAction: () {
+          _vm.listTransactions.clearResult();
+          _vm.listTransactions.execute();
+        },
+        type: MessageType.error,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      drawer: const AppDrawer(),
-      persistentFooterButtons: [
-        TextButton(onPressed: () {}, child: const Text('Cancelar')),
-        FilledButton(onPressed: () {}, child: const Text('Salvar')),
-      ],
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Data selecionada: $_selectedDate'),
-            ElevatedButton(
-              onPressed: () => context.showBottomSheet(
-                child: AdaptiveDatePicker(
-                  initialDate: _selectedDate,
-                  firstDate: DateTime(1900),
-                  lastDate: DateTime(2100),
-                  onDateChanged: (newDate) {
-                    setState(() {
-                      _selectedDate = newDate;
-                    });
-                  },
+    return Selector<HomeViewModel, bool>(
+      selector: (_, vm) => vm.isSelectionMode,
+      builder: (_, isSelectionMode, _) {
+        return isSelectionMode
+            ? Scaffold(
+                persistentFooterButtons: [],
+                body: HomeListTransactionsWidget(transactions: _vm.filteredTransactions),
+              )
+            : Scaffold(
+                appBar: AppBar(),
+                drawer: const AppDrawer(),
+                body: RefreshIndicator(
+                  onRefresh: () => _vm.listTransactions.execute(),
+                  child: HomeListTransactionsWidget(transactions: _vm.filteredTransactions),
                 ),
-              ),
-              child: const Text('Selecione uma data'),
-            ),
-          ],
-        ),
-      ),
+              );
+      },
     );
   }
 }

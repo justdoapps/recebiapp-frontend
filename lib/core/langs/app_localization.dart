@@ -5,6 +5,8 @@ import '../../interfaces/screens/auth/lang/auth_pt_lang.dart';
 import '../../interfaces/screens/auth/lang/auth_us_lang.dart';
 import '../../interfaces/screens/customer/lang/customer_pt_lang.dart';
 import '../../interfaces/screens/customer/lang/customer_us_lang.dart';
+import '../../interfaces/screens/home/lang/home_pt_lang.dart';
+import '../../interfaces/screens/home/lang/home_us_lang.dart';
 import '../../interfaces/screens/monetization/lang/monetization_pt_lang.dart';
 import '../../interfaces/screens/monetization/lang/monetization_us_lang.dart';
 import 'keys_lang.dart';
@@ -18,11 +20,23 @@ class AppLocalization {
   AppLocalization(this.locale) {
     switch (locale.languageCode) {
       case 'pt':
-        _strings = {...PtLang.words, ...AuthPtLang.words, ...MonetizationPtLang.words, ...CustomerPtLang.words};
+        _strings = {
+          ...PtLang.words,
+          ...AuthPtLang.words,
+          ...MonetizationPtLang.words,
+          ...CustomerPtLang.words,
+          ...HomePtLang.words,
+        };
         break;
       case 'en':
       default:
-        _strings = {...UsLang.words, ...AuthUsLang.words, ...MonetizationUsLang.words, ...CustomerUsLang.words};
+        _strings = {
+          ...UsLang.words,
+          ...AuthUsLang.words,
+          ...MonetizationUsLang.words,
+          ...CustomerUsLang.words,
+          ...HomeUsLang.words,
+        };
     }
   }
 
@@ -65,6 +79,14 @@ class AppLocalization {
   String get editData => getWord(KeysLang.editData);
   String get createdAt => getWord(KeysLang.createdAt);
   String get updatedAt => getWord(KeysLang.updatedAt);
+  String get income => getWord(KeysLang.income);
+  String get expense => getWord(KeysLang.expense);
+  String get pending => getWord(KeysLang.pending);
+  String get paid => getWord(KeysLang.paid);
+  String get dueToday => getWord(KeysLang.dueToday);
+  String get overdue => getWord(KeysLang.overdue);
+  String get canceled => getWord(KeysLang.canceled);
+  String get edit => getWord(KeysLang.edit);
 
   // String nameTrips(String name) => _get('nameTrips').replaceAll('{name}', name);
 }

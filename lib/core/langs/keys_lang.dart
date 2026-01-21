@@ -16,6 +16,7 @@ class KeysLang {
   static const name = 'name';
   static const back = 'back';
   static const or = 'or';
+  static const edit = 'edit';
   static const cancel = 'cancel';
   static const confirm = 'confirm';
   static const themeMode = 'themeMode';
@@ -34,4 +35,11 @@ class KeysLang {
   static const editData = 'editData';
   static const createdAt = 'createdAt';
   static const updatedAt = 'updatedAt';
+  static const income = 'income';
+  static const expense = 'expense';
+  static const pending = 'pending';
+  static const paid = 'paid';
+  static const dueToday = 'dueToday';
+  static const overdue = 'overdue';
+  static const canceled = 'canceled';
 }

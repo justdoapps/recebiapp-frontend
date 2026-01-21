@@ -14,12 +14,11 @@ enum MonetizationPlan {
   factory MonetizationPlan.fromString(String? value) {
     if (value == null) return MonetizationPlan.FREE;
 
-    return MonetizationPlan.values.firstWhere(
-      (e) => e.name == value,
-      orElse: () {
-        return MonetizationPlan.FREE;
-      },
-    );
+    try {
+      return MonetizationPlan.values.byName(value);
+    } catch (_) {
+      return MonetizationPlan.FREE;
+    }
   }
 
   String getPlanName(BuildContext context) {

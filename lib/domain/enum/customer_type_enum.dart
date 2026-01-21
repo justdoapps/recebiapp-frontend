@@ -14,12 +14,11 @@ enum CustomerType {
   factory CustomerType.fromString(String? value) {
     if (value == null) return CustomerType.CUSTOMER;
 
-    return CustomerType.values.firstWhere(
-      (e) => e.name == value,
-      orElse: () {
-        return CustomerType.CUSTOMER;
-      },
-    );
+    try {
+      return CustomerType.values.byName(value);
+    } catch (_) {
+      return CustomerType.CUSTOMER;
+    }
   }
 
   String getCustomerTypeName(BuildContext context) {

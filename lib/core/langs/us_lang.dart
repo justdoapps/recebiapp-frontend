@@ -36,6 +36,14 @@ abstract class UsLang {
     KeysLang.editData: 'Edit',
     KeysLang.createdAt: 'Created at',
     KeysLang.updatedAt: 'Updated at',
+    KeysLang.income: 'Income',
+    KeysLang.expense: 'Expense',
+    KeysLang.pending: 'Pending',
+    KeysLang.paid: 'Paid',
+    KeysLang.dueToday: 'Due today',
+    KeysLang.overdue: 'Overdue',
+    KeysLang.canceled: 'Canceled',
+    KeysLang.edit: 'Edit',
   };
 
   static const wordsAuth = AuthUsLang;

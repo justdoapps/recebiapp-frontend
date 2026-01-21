@@ -1,6 +1,7 @@
 import 'package:logging/logging.dart';
 
 import '../../../core/mixins/http_request_mixin.dart';
+import '../../../core/utils/failure.dart';
 import '../../../core/utils/result.dart';
 import '../../../domain/dtos/customer_upsert_dto.dart';
 import '../../../domain/models/customer_model.dart';
@@ -28,7 +29,7 @@ class CustomerRepositoryImpl with HttpRequestMixin implements CustomerRepository
 
     return result.fold(
       (error) => Result.error(error),
-      (value) => value.statusCode == 201 ? Result.okVoid() : Result.errorVoid(),
+      (value) => value.statusCode == 201 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
     );
   }
 
@@ -43,7 +44,7 @@ class CustomerRepositoryImpl with HttpRequestMixin implements CustomerRepository
 
     return result.fold(
       (error) => Result.error(error),
-      (value) => value.statusCode == 204 ? Result.okVoid() : Result.errorVoid(),
+      (value) => value.statusCode == 204 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
     );
   }
 
@@ -77,7 +78,7 @@ class CustomerRepositoryImpl with HttpRequestMixin implements CustomerRepository
 
     return result.fold(
       (error) => Result.error(error),
-      (value) => value.statusCode == 204 ? Result.okVoid() : Result.errorVoid(),
+      (value) => value.statusCode == 204 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
     );
   }
 }

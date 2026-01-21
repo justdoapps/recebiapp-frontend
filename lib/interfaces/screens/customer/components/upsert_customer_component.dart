@@ -36,7 +36,6 @@ class _UpsertCustomerComponentState extends State<UpsertCustomerComponent> with 
 
   @override
   void initState() {
-    super.initState();
     _vm = context.read<CustomerViewModel>();
 
     if (widget.customer != null) {
@@ -52,6 +51,7 @@ class _UpsertCustomerComponentState extends State<UpsertCustomerComponent> with 
 
     _vm.createCustomer.addListener(_onCreateListener);
     _vm.updateCustomer.addListener(_onUpdateListener);
+    super.initState();
   }
 
   @override

@@ -2,12 +2,12 @@ import 'package:intl/intl.dart';
 
 extension CurrencyExtension on int {
   String toCurrency(String locale) {
-    final double value = this / 100.0;
+    final double value = this / 100;
     return NumberFormat.simpleCurrency(locale: locale).format(value);
   }
 
-  String toDecimalPattern(String locale) {
-    final double value = this / 100.0;
+  String centsToString(String locale) {
+    final double value = this / 100;
     return NumberFormat.decimalPattern(locale).format(value);
   }
 }

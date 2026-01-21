@@ -23,6 +23,9 @@ class CustomerCardWidget extends StatelessWidget {
           mainAxisAlignment: .spaceBetween,
           children: [
             IconButton(
+              style: IconButton.styleFrom(
+                padding: .zero,
+              ),
               onPressed: () {
                 context.showBottomSheet(
                   child: Padding(
@@ -34,7 +37,18 @@ class CustomerCardWidget extends StatelessWidget {
                   ),
                 );
               },
-              icon: const Icon(Icons.edit, size: 20),
+              icon: Icon(
+                Icons.edit,
+                size: 25,
+                color: context.theme.colorScheme.primary,
+                shadows: [
+                  Shadow(
+                    offset: const Offset(2.0, 2.0),
+                    blurRadius: 5.0,
+                    color: context.theme.colorScheme.primary.withValues(alpha: 0.5),
+                  ),
+                ],
+              ),
             ),
             Column(
               children: [
@@ -43,6 +57,15 @@ class CustomerCardWidget extends StatelessWidget {
               ],
             ),
             TextButton(
+              style: TextButton.styleFrom(
+                padding: .zero,
+                backgroundColor: (customer.active ? context.theme.colorScheme.primary : context.theme.colorScheme.error)
+                    .withValues(alpha: 0.1),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: .all(.circular(10)),
+                ),
+                side: .none,
+              ),
               onPressed: () async {
                 final confirm = await context.showConfirmationDialog(
                   title: Text(customer.name, style: context.textTheme.largeBold, textAlign: .center),
@@ -58,6 +81,7 @@ class CustomerCardWidget extends StatelessWidget {
               child: Text(
                 customer.active ? context.words.active : context.words.inactive,
                 style: TextStyle(
+                  fontWeight: .bold,
                   color: customer.active ? context.theme.colorScheme.primary : context.theme.colorScheme.error,
                 ),
               ),
@@ -78,15 +102,16 @@ class CustomerCardWidget extends StatelessWidget {
                   spacing: 15,
                   children: [
                     Column(
+                      crossAxisAlignment: .start,
                       children: [
                         Text(
-                          '${context.words.createdAt}: ${customer.createdAt.toLocaleDateTime(context.locale)}',
+                          '${context.words.createdAt} ${customer.createdAt.toLocaleDateTime(context.locale)}',
                           style: context.textTheme.verySmall,
                         ),
                         Visibility(
                           visible: customer.updatedAt != customer.createdAt,
                           child: Text(
-                            '${context.words.updatedAt}: ${customer.updatedAt.toLocaleDateTime(context.locale)}',
+                            '${context.words.updatedAt} ${customer.updatedAt.toLocaleDateTime(context.locale)}',
                             style: context.textTheme.verySmall,
                           ),
                         ),

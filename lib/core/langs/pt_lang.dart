@@ -36,6 +36,14 @@ abstract class PtLang {
     KeysLang.editData: 'Editar',
     KeysLang.createdAt: 'Criado em',
     KeysLang.updatedAt: 'Atualizado em',
+    KeysLang.income: 'Receita',
+    KeysLang.expense: 'Despesa',
+    KeysLang.pending: 'Pendente',
+    KeysLang.paid: 'Pago',
+    KeysLang.dueToday: 'Vencimento hoje',
+    KeysLang.overdue: 'Atrasado',
+    KeysLang.canceled: 'Cancelado',
+    KeysLang.edit: 'Editar',
   };
 
   static const wordsAuth = AuthPtLang;

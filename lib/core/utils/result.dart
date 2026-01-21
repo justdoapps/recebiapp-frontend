@@ -2,8 +2,6 @@ sealed class Result<T> {
   const Result();
   const factory Result.ok(T value) = Ok._;
   const factory Result.error(Exception error) = Error._;
-  static Result<void> okVoid() => const Result.ok(null);
-  static Result<void> errorVoid() => Result.error(Exception(''));
 
   R fold<R>(R Function(Exception error) onError, R Function(T value) onOk) {
     return switch (this) {
