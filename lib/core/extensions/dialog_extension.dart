@@ -9,9 +9,10 @@ extension ModalsExtension on BuildContext {
     required Widget content,
     String? confirmText,
     String? cancelText,
+    VoidCallback? onConfirm,
     bool barrierDismissible = true,
   }) {
-    return showDialog<bool>(
+    return showAdaptiveDialog<bool>(
       context: this,
       barrierDismissible: barrierDismissible,
 
@@ -28,7 +29,10 @@ extension ModalsExtension on BuildContext {
             child: Text(cancelText ?? words.cancel),
           ),
           TextButton(
-            onPressed: () => pop(true),
+            onPressed: () {
+              onConfirm?.call();
+              pop(true);
+            },
             child: Text(confirmText ?? words.confirm),
           ),
         ],
@@ -40,7 +44,7 @@ extension ModalsExtension on BuildContext {
     Widget? title,
     required Widget content,
   }) {
-    return showDialog<bool>(
+    return showAdaptiveDialog<bool>(
       context: this,
       builder: (_) => AlertDialog.adaptive(
         title: title,

@@ -11,6 +11,7 @@ import '../../../../domain/enum/customer_type_enum.dart';
 import '../../../../domain/models/customer_model.dart';
 import '../../../core/app_gradient_button.dart';
 import '../../../core/app_input.dart';
+import '../../../core/app_input_stack.dart';
 import '../customer_view_model.dart';
 import '../lang/customer_localization_ext.dart';
 
@@ -114,11 +115,11 @@ class _UpsertCustomerComponentState extends State<UpsertCustomerComponent> with 
       _vm.updateCustomer.execute(
         CustomerUpdateDto(
           id: widget.customer!.id,
-          name: _nameEC.text,
-          document: _documentEC.text.isEmpty ? null : _documentEC.text,
-          phone: _phoneEC.text.isEmpty ? null : _phoneEC.text,
-          observation: _observationEC.text.isEmpty ? null : _observationEC.text,
-          type: type,
+          name: _nameEC.text != widget.customer!.name ? _nameEC.text : null,
+          document: _documentEC.text != widget.customer!.document ? _documentEC.text : null,
+          phone: _phoneEC.text != widget.customer!.phone ? _phoneEC.text : null,
+          observation: _observationEC.text != widget.customer!.observation ? _observationEC.text : null,
+          type: type != widget.customer!.type ? type : null,
         ),
       );
     }
@@ -131,7 +132,7 @@ class _UpsertCustomerComponentState extends State<UpsertCustomerComponent> with 
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+            padding: const .symmetric(horizontal: 25),
             child: Column(
               mainAxisSize: .min,
               mainAxisAlignment: .center,

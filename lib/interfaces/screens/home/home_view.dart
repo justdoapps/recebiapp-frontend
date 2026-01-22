@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/extensions/build_context_extension.dart';
+import '../../../core/extensions/dialog_extension.dart';
 import '../../../core/extensions/message_extension.dart';
 import '../../../core/mixins/loading_mixin.dart';
 import '../../../core/utils/debouncer.dart';
 import '../../../core/utils/throttler.dart';
 import '../../core/app_drawer.dart';
+import 'components/upsert_transaction_component.dart';
 import 'home_view_model.dart';
+import 'lang/home_localization_ext.dart';
 import 'widgets/home_list_transactions_widget.dart';
 
 class HomeView extends StatefulWidget {
@@ -25,10 +28,12 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
 
   @override
   void initState() {
-    super.initState();
     _vm = context.read<HomeViewModel>();
     _vm.listTransactions.addListener(_listenerCommandList);
-    _vm.listTransactions.execute();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _vm.listTransactions.execute();
+    });
+    super.initState();
   }
 
   @override
@@ -68,6 +73,22 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
             : Scaffold(
                 appBar: AppBar(),
                 drawer: const AppDrawer(),
+                floatingActionButtonLocation: .centerDocked,
+                floatingActionButton: FloatingActionButton.extended(
+                  onPressed: () {
+                    context.showBottomSheet(
+                      child: Padding(
+                        padding: .only(bottom: context.viewInsetsBottom),
+                        child: ChangeNotifierProvider.value(
+                          value: _vm,
+                          child: const UpsertTransactionComponent(),
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.add),
+                  label: Text(context.words.newData),
+                ),
                 body: RefreshIndicator(
                   onRefresh: () => _vm.listTransactions.execute(),
                   child: HomeListTransactionsWidget(transactions: _vm.filteredTransactions),

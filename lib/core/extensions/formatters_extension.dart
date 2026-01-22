@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-extension CurrencyExtension on int {
+extension IntExtension on int {
   String toCurrency(String locale) {
     final double value = this / 100;
     return NumberFormat.simpleCurrency(locale: locale).format(value);
@@ -9,6 +9,19 @@ extension CurrencyExtension on int {
   String centsToString(String locale) {
     final double value = this / 100;
     return NumberFormat.decimalPattern(locale).format(value);
+  }
+
+  String bytesToMegabytesString() {
+    final double value = this / 1024 / 1024;
+    return '${value.toStringAsFixed(2)}MB';
+  }
+}
+
+extension StringExtension on String {
+  int toCents() {
+    if (isEmpty) return 0;
+    final value = (double.tryParse(this) ?? 0.0);
+    return (value * 100).round();
   }
 }
 

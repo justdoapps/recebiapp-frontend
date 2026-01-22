@@ -41,7 +41,7 @@ final appRouter = GoRouter(
       path: Routes.home,
       builder: (context, state) {
         return ChangeNotifierProvider(
-          create: (_) => HomeViewModel(),
+          create: (_) => HomeViewModel(repository: getIt(), listCustomersUseCase: getIt()),
           child: const HomeView(),
         );
       },

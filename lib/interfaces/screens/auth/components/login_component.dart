@@ -80,9 +80,7 @@ class _LoginComponentState extends State<LoginComponent> with LoadingMixin {
               controller: _emailEC,
               inputType: .emailAddress,
               inputAction: .next,
-              validator: (value) =>
-                  value.validateRequired(context) ??
-                  value.validateEmail(context),
+              validator: (value) => value.validateRequired(context) ?? value.validateEmail(context),
             ),
             const SizedBox(height: 15),
             AppInput(

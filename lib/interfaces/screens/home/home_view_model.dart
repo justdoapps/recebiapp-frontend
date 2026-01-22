@@ -4,8 +4,11 @@ import '../../../core/utils/command.dart';
 import '../../../core/utils/result.dart';
 import '../../../data/repositories/transaction/transaction_repository.dart';
 import '../../../domain/dtos/transaction_upsert_dto.dart';
+import '../../../domain/enum/customer_type_enum.dart';
 import '../../../domain/enum/transaction_enum.dart';
+import '../../../domain/models/customer_model.dart';
 import '../../../domain/models/transaction_model.dart';
+import '../../../domain/use_cases/list_customers_use_case.dart';
 
 typedef UpdateStatusArgs = ({TransactionModel transaction, TransactionStatus status, DateTime? paymentDate});
 typedef BatchUpdateStatusArgs = ({
@@ -16,9 +19,13 @@ typedef BatchUpdateStatusArgs = ({
 
 class HomeViewModel extends ChangeNotifier {
   final TransactionRepository _repository;
+  final ListCustomersUseCase _listCustomersUseCase;
 
-  HomeViewModel({required TransactionRepository repository}) : _repository = repository {
+  HomeViewModel({required TransactionRepository repository, required ListCustomersUseCase listCustomersUseCase})
+    : _repository = repository,
+      _listCustomersUseCase = listCustomersUseCase {
     listTransactions = Command0<void>(_listTransactions);
+    listCustomers = Command0<void>(_listCustomers);
     createTransaction = Command1<void, TransactionCreateDto>(_createTransaction);
     updateTransaction = Command1<void, TransactionUpdateDto>(_updateTransaction);
     deleteTransaction = Command1<void, TransactionModel>(_deleteTransaction);
@@ -29,8 +36,15 @@ class HomeViewModel extends ChangeNotifier {
   List<TransactionModel> _allTransactions = [];
   List<TransactionModel> _filteredTransactions = [];
   String _filterByNameCustomer = '';
+  List<CustomerModel> _customers = [];
 
   List<TransactionModel> get filteredTransactions => List.unmodifiable(_filteredTransactions);
+  List<CustomerModel> get customers => List.unmodifiable(
+    _customers.where((c) => c.type == CustomerType.CUSTOMER || c.type == CustomerType.BOTH).toList(),
+  );
+  List<CustomerModel> get suppliers => List.unmodifiable(
+    _customers.where((c) => c.type == CustomerType.SUPPLIER || c.type == CustomerType.BOTH).toList(),
+  );
 
   void filterTransactionsByNameCustomer({String name = ''}) {
     _filteredTransactions.clear();
@@ -64,6 +78,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   late Command0<void> listTransactions;
+  late Command0<void> listCustomers;
   late Command1<void, TransactionCreateDto> createTransaction;
   late Command1<void, TransactionUpdateDto> updateTransaction;
   late Command1<void, TransactionModel> deleteTransaction;
@@ -76,6 +91,15 @@ class HomeViewModel extends ChangeNotifier {
       _allTransactions.clear();
       _allTransactions = List<TransactionModel>.from(value);
       filterTransactionsByNameCustomer(name: _filterByNameCustomer);
+      return const Result.ok(null);
+    },
+  );
+
+  Future<Result<void>> _listCustomers() async => (await _listCustomersUseCase.getFromCacheWithoutInactive()).fold(
+    (error) => Result.error(error),
+    (value) {
+      _customers.clear();
+      _customers = List<CustomerModel>.from(value);
       return const Result.ok(null);
     },
   );
@@ -136,6 +160,7 @@ class HomeViewModel extends ChangeNotifier {
   @override
   void dispose() {
     listTransactions.dispose();
+    listCustomers.dispose();
     createTransaction.dispose();
     updateTransaction.dispose();
     deleteTransaction.dispose();
