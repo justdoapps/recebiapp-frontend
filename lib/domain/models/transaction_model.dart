@@ -37,6 +37,7 @@ class TransactionModel {
     required this.updatedAt,
   });
 
+  //TODO retornar o objeto customer e não somente o id do backend
   factory TransactionModel.fromMap(Map<String, dynamic> json) {
     return TransactionModel(
       id: json['id'],
@@ -44,12 +45,12 @@ class TransactionModel {
       amount: json['amount'],
       dueDate: DateTime.parse(json['dueDate']),
       paidAt: json['paidAt'] != null ? DateTime.parse(json['paidAt']) : null,
-      type: json['type'],
-      status: json['status'],
+      type: TransactionType.fromString(json['type'] as String),
+      status: TransactionStatus.fromString(json['status'] as String),
       internalNote: json['internalNote'],
       customerNote: json['customerNote'],
       paymentInfo: json['paymentInfo'],
-      customer: CustomerModel.fromJson(json['customer']),
+      customer: CustomerModel.fromMap(json['customer']),
       recurrenceId: json['recurrenceId'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),

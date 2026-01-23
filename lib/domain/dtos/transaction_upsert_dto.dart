@@ -1,5 +1,4 @@
 import '../enum/transaction_enum.dart';
-import '../models/customer_model.dart';
 
 class TransactionUpdateDto {
   final String id;
@@ -12,7 +11,7 @@ class TransactionUpdateDto {
   final String? internalNote;
   final String? customerNote;
   final String? paymentInfo;
-  final CustomerModel? customer;
+  final String? customerId;
   final String? recurrenceId;
 
   TransactionUpdateDto({
@@ -26,7 +25,7 @@ class TransactionUpdateDto {
     this.internalNote,
     this.customerNote,
     this.paymentInfo,
-    this.customer,
+    this.customerId,
     this.recurrenceId,
   });
 
@@ -34,14 +33,14 @@ class TransactionUpdateDto {
     return <String, dynamic>{
       if (description != null) 'description': description,
       if (amount != null) 'amount': amount,
-      if (dueDate != null) 'dueDate': dueDate,
-      if (paidAt != null) 'paidAt': paidAt,
+      if (dueDate != null) 'dueDate': dueDate!.toIso8601String(),
+      if (paidAt != null) 'paidAt': paidAt!.toIso8601String(),
       if (type != null) 'type': type!.name,
       if (status != null) 'status': status!.name,
       if (internalNote != null) 'internalNote': internalNote,
       if (customerNote != null) 'customerNote': customerNote,
       if (paymentInfo != null) 'paymentInfo': paymentInfo,
-      if (customer != null) 'customer': customer,
+      if (customerId != null) 'customerId': customerId,
       if (recurrenceId != null) 'recurrenceId': recurrenceId,
     };
   }
@@ -56,7 +55,7 @@ class TransactionCreateDto {
   final String? internalNote;
   final String? customerNote;
   final String? paymentInfo;
-  final CustomerModel customer;
+  final String customerId;
 
   TransactionCreateDto({
     required this.description,
@@ -67,20 +66,20 @@ class TransactionCreateDto {
     this.internalNote,
     this.customerNote,
     this.paymentInfo,
-    required this.customer,
+    required this.customerId,
   });
 
   Map<String, dynamic> toBodyRequest() {
     return <String, dynamic>{
       'description': description,
       'amount': amount,
-      'dueDate': dueDate,
+      'dueDate': dueDate.toIso8601String(),
       'type': type.name,
       'status': status.name,
       if (internalNote != null) 'internalNote': internalNote,
       if (customerNote != null) 'customerNote': customerNote,
       if (paymentInfo != null) 'paymentInfo': paymentInfo,
-      'customer': customer,
+      'customerId': customerId,
     };
   }
 }

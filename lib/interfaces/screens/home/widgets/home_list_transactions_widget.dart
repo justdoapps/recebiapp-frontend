@@ -12,20 +12,31 @@ class HomeListTransactionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return transactions.isEmpty
-        ? Center(
-            child: Text(context.words.noTransactionsFound, style: context.textTheme.large),
-          )
-        : ListView.separated(
-            padding: const EdgeInsets.only(bottom: 80),
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return HomeTransactionCardWidget(transaction: transactions[index]);
-            },
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-            itemCount: transactions.length,
-          );
+    return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      slivers: transactions.isEmpty
+          ? [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Text(context.words.noTransactionsFound, style: context.textTheme.large),
+                ),
+              ),
+            ]
+          : [
+              SliverList.separated(
+                itemBuilder: (context, index) {
+                  return HomeTransactionCardWidget(transaction: transactions[index]);
+                },
+                separatorBuilder: (context, index) {
+                  return const Divider();
+                },
+                itemCount: transactions.length,
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 80),
+              ),
+            ],
+    );
   }
 }

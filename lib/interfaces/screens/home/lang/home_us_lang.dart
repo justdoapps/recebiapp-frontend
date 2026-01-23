@@ -14,5 +14,9 @@ abstract class HomeUsLang {
     HomeKeysLang.internalNote: 'Internal observation only',
     HomeKeysLang.paymentInfo: 'Payment info',
     HomeKeysLang.description: 'Description',
+    HomeKeysLang.confirmClearFiles: 'Do you want to remove all files?',
+    HomeKeysLang.clearAll: 'Clear all',
+    HomeKeysLang.addFiles: 'Add files',
+    HomeKeysLang.confirmRemoveFile: 'Do you want to remove the file {{fileName}}?',
   };
 }

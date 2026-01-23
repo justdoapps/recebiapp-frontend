@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +56,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
 
     if (widget.transaction != null) {
       _descriptionEC.text = widget.transaction!.description;
-      _amountEC.text = widget.transaction!.amount.centsToString(context.locale);
+      _amountEC.text = widget.transaction!.amount.toString();
       _internalNoteEC.text = widget.transaction!.internalNote ?? '';
       _customerNoteEC.text = widget.transaction!.customerNote ?? '';
       _paymentInfoEC.text = widget.transaction!.paymentInfo ?? '';
@@ -125,7 +123,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
           internalNote: _internalNoteEC.text.isEmpty ? null : _internalNoteEC.text,
           customerNote: _customerNoteEC.text.isEmpty ? null : _customerNoteEC.text,
           paymentInfo: _paymentInfoEC.text.isEmpty ? null : _paymentInfoEC.text,
-          customer: _customer!,
+          customerId: _customer!.id,
           dueDate: _dueDate,
           type: _type,
           status: _status,
@@ -140,7 +138,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
           internalNote: _internalNoteEC.text != widget.transaction!.internalNote ? _internalNoteEC.text : null,
           customerNote: _customerNoteEC.text != widget.transaction!.customerNote ? _customerNoteEC.text : null,
           paymentInfo: _paymentInfoEC.text != widget.transaction!.paymentInfo ? _paymentInfoEC.text : null,
-          customer: _customer != widget.transaction!.customer ? _customer : null,
+          customerId: _customer != widget.transaction!.customer ? _customer!.id : null,
           dueDate: _dueDate != widget.transaction!.dueDate ? _dueDate : null,
           type: _type != widget.transaction!.type ? _type : null,
           status: _status != widget.transaction!.status ? _status : null,
@@ -231,6 +229,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                         _customer = value;
                       });
                     },
+
                     dropdownMenuEntries: _type == TransactionType.INCOME
                         ? _vm.customers
                               .map<DropdownMenuEntry<CustomerModel>>(
@@ -273,15 +272,28 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                         controller: TextEditingController(text: _dueDate.toLocaleDate(context.locale)),
                         onTap: () async {
                           context.showBottomSheet(
-                            child: AdaptiveDatePicker(
-                              initialDate: _dueDate,
-                              firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                              lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
-                              onDateChanged: (value) {
-                                setState(() {
-                                  _dueDate = value;
-                                });
-                              },
+                            child: SafeArea(
+                              child: Column(
+                                mainAxisSize: .min,
+                                children: [
+                                  AdaptiveDatePicker(
+                                    initialDate: _dueDate,
+                                    firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                                    lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                                    onDateChanged: (value) {
+                                      setState(() {
+                                        _dueDate = value;
+                                      });
+                                    },
+                                  ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      context.pop();
+                                    },
+                                    child: Text(context.words.back),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -321,7 +333,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                     OutlinedButton.icon(
                       onPressed: () {
                         context.showConfirmationDialog(
-                          content: Text('Tem certeza que deseja remover todos os arquivos?'),
+                          content: Text(context.words.confirmClearFiles),
                           onConfirm: () {
                             setState(() {
                               files.clear();
@@ -330,7 +342,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                         );
                       },
                       icon: const Icon(Icons.clear),
-                      label: const Text('Limpar todos'),
+                      label: Text(context.words.clearAll),
                     ),
                     FilledButton.icon(
                       onPressed: () async {
@@ -346,7 +358,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                         }
                       },
                       icon: const Icon(Icons.attach_file),
-                      label: const Text('Adicionar arquivos'),
+                      label: Text(context.words.addFiles),
                     ),
                   ],
                 ),
@@ -358,8 +370,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                           child: InkWell(
                             onTap: () {
                               context.showConfirmationDialog(
-                                // title: context.words.removeFile,
-                                content: Text('Tem certeza que deseja remover o arquivo ${x.name}'),
+                                content: Text(context.words.confirmRemoveFile(x.name)),
                                 onConfirm: () {
                                   setState(() {
                                     files.remove(x);
@@ -374,7 +385,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                                   fit: .scaleDown,
                                   child: Text(x.name, style: context.textTheme.verySmallBold),
                                 ),
-                                subtitle: Text(x.size.bytesToMegabytesString(), style: context.textTheme.verySmall),
+                                subtitle: Text(x.size.bytesToMbString(), style: context.textTheme.verySmall),
                               ),
                             ),
                           ),
@@ -383,7 +394,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                       .toList(),
                 ),
                 const Divider(),
-                AppGradientButton(onPressed: () {}, label: context.words.save),
+                AppGradientButton(onPressed: _save, label: context.words.save),
               ],
             ),
           ),

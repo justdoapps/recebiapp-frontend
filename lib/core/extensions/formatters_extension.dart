@@ -2,26 +2,24 @@ import 'package:intl/intl.dart';
 
 extension IntExtension on int {
   String toCurrency(String locale) {
-    final double value = this / 100;
-    return NumberFormat.simpleCurrency(locale: locale).format(value);
+    return NumberFormat.simpleCurrency(locale: locale, decimalDigits: 2).format(this / 100);
   }
 
   String centsToString(String locale) {
-    final double value = this / 100;
-    return NumberFormat.decimalPattern(locale).format(value);
+    return NumberFormat.decimalPattern(locale).format(this / 100);
   }
 
-  String bytesToMegabytesString() {
+  String bytesToMbString() {
     final double value = this / 1024 / 1024;
-    return '${value.toStringAsFixed(2)}MB';
+    return '${value.toStringAsFixed(2)}mb';
   }
 }
 
 extension StringExtension on String {
   int toCents() {
     if (isEmpty) return 0;
-    final value = (double.tryParse(this) ?? 0.0);
-    return (value * 100).round();
+    final cleanString = replaceAll(RegExp(r'[^0-9]'), '');
+    return int.tryParse(cleanString) ?? 0;
   }
 }
 

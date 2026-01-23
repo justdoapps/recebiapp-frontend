@@ -11,4 +11,8 @@ class HomeKeysLang {
   static const String internalNote = 'internalNote';
   static const String paymentInfo = 'paymentInfo';
   static const String description = 'description';
+  static const String confirmClearFiles = 'confirmClearFiles';
+  static const String clearAll = 'clearAll';
+  static const String addFiles = 'addFiles';
+  static const String confirmRemoveFile = 'confirmRemoveFile';
 }

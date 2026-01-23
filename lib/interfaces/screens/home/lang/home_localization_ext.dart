@@ -14,4 +14,9 @@ extension HomeLocalization on AppLocalization {
   String get internalNote => getWord(HomeKeysLang.internalNote);
   String get paymentInfo => getWord(HomeKeysLang.paymentInfo);
   String get description => getWord(HomeKeysLang.description);
+  String get confirmClearFiles => getWord(HomeKeysLang.confirmClearFiles);
+  String get clearAll => getWord(HomeKeysLang.clearAll);
+  String get addFiles => getWord(HomeKeysLang.addFiles);
+  String confirmRemoveFile(String fileName) =>
+      getWord(HomeKeysLang.confirmRemoveFile).replaceAll('{{fileName}}', fileName);
 }

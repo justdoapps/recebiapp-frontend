@@ -14,5 +14,9 @@ abstract class HomePtLang {
     HomeKeysLang.internalNote: 'Observação somente interna',
     HomeKeysLang.paymentInfo: 'Informações de pagamento',
     HomeKeysLang.description: 'Descrição',
+    HomeKeysLang.confirmClearFiles: 'Deseja remover todos os arquivos?',
+    HomeKeysLang.clearAll: 'Limpar todos',
+    HomeKeysLang.addFiles: 'Adicionar arquivos',
+    HomeKeysLang.confirmRemoveFile: 'Deseja remover o arquivo {{fileName}}?',
   };
 }

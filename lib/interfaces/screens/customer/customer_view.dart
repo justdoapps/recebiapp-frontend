@@ -93,46 +93,43 @@ class _CustomerViewState extends State<CustomerView> with LoadingMixin {
           icon: const Icon(Icons.add),
           label: Text(context.words.newData),
         ),
-        body: RefreshIndicator(
-          onRefresh: () => _vm.listCustomers.execute(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: ListenableBuilder(
-              listenable: _vm,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: AppSearchBar(
-                  hintText: context.words.searchCustomers,
-                  onChanged: (value) => _searchDebouncer.run(() => _vm.filterCustomers(query: value)),
-                  onClear: () {
-                    _clearThrottler.run(() {
-                      _searchEC.clear();
-                      _searchDebouncer.cancel();
-                      _vm.filterCustomers();
-                    });
-                  },
-                  controller: _searchEC,
-                ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          child: ListenableBuilder(
+            listenable: _vm,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: AppSearchBar(
+                hintText: context.words.searchCustomers,
+                onChanged: (value) => _searchDebouncer.run(() => _vm.filterCustomers(query: value)),
+                onClear: () {
+                  _clearThrottler.run(() {
+                    _searchEC.clear();
+                    _searchDebouncer.cancel();
+                    _vm.filterCustomers();
+                  });
+                },
+                controller: _searchEC,
               ),
-              builder: (_, child) {
-                return Column(
-                  children: [
-                    child!,
-                    Expanded(
-                      child: TabBarView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        children: [
-                          CustomerListWidget(vm: _vm),
-                          CustomerListWidget(vm: _vm, type: CustomerType.CUSTOMER),
-                          CustomerListWidget(vm: _vm, type: CustomerType.SUPPLIER),
-                          CustomerListWidget(vm: _vm, type: CustomerType.BOTH),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              },
             ),
+            builder: (_, child) {
+              return Column(
+                children: [
+                  child!,
+                  Expanded(
+                    child: TabBarView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        CustomerListWidget(vm: _vm),
+                        CustomerListWidget(vm: _vm, type: CustomerType.CUSTOMER),
+                        CustomerListWidget(vm: _vm, type: CustomerType.SUPPLIER),
+                        CustomerListWidget(vm: _vm, type: CustomerType.BOTH),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

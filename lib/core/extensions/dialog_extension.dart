@@ -70,6 +70,7 @@ extension ModalsExtension on BuildContext {
       isScrollControlled: true,
       useRootNavigator: true,
       showDragHandle: true,
+      useSafeArea: true,
       builder: (_) => child,
     );
   }

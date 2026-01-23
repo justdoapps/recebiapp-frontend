@@ -71,7 +71,9 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                 body: HomeListTransactionsWidget(transactions: _vm.filteredTransactions),
               )
             : Scaffold(
-                appBar: AppBar(),
+                appBar: AppBar(
+                  title: Text(context.words.home),
+                ),
                 drawer: const AppDrawer(),
                 floatingActionButtonLocation: .centerDocked,
                 floatingActionButton: FloatingActionButton.extended(
@@ -90,7 +92,7 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                   label: Text(context.words.newData),
                 ),
                 body: RefreshIndicator(
-                  onRefresh: () => _vm.listTransactions.execute(),
+                  onRefresh: _vm.listTransactions.execute,
                   child: HomeListTransactionsWidget(transactions: _vm.filteredTransactions),
                 ),
               );

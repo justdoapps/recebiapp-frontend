@@ -20,20 +20,33 @@ class CustomerListWidget extends StatelessWidget {
       CustomerType.BOTH => vm.typeBoth,
       null => vm.customers,
     };
-    return customers.isEmpty
-        ? Center(
-            child: Text(context.words.noCustomersFound, style: context.textTheme.large),
-          )
-        : ListView.separated(
-            padding: const EdgeInsets.only(bottom: 80),
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return CustomerCardWidget(customer: customers[index], vm: vm);
-            },
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-            itemCount: customers.length,
-          );
+    return RefreshIndicator(
+      onRefresh: vm.listCustomers.execute,
+      child: CustomScrollView(
+        slivers: customers.isEmpty
+            ? [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Center(
+                    child: Text(context.words.noCustomersFound, style: context.textTheme.large),
+                  ),
+                ),
+              ]
+            : [
+                SliverList.separated(
+                  itemBuilder: (context, index) {
+                    return CustomerCardWidget(customer: customers[index], vm: vm);
+                  },
+                  separatorBuilder: (context, index) {
+                    return const Divider();
+                  },
+                  itemCount: customers.length,
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 80),
+                ),
+              ],
+      ),
+    );
   }
 }
