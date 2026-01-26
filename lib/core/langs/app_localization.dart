@@ -65,7 +65,10 @@ class AppLocalization {
   String minLength(int min) => getWord(KeysLang.minLength).replaceAll('{min}', min.toString());
   String get passwordsDontMatch => getWord(KeysLang.passwordsDontMatch);
   String get cancel => getWord(KeysLang.cancel);
+  String get cancelPayment => getWord(KeysLang.cancelPayment);
+  String get uncancel => getWord(KeysLang.uncancel);
   String get confirm => getWord(KeysLang.confirm);
+  String get delete => getWord(KeysLang.delete);
   String get free => getWord(KeysLang.free);
   String get freeTrial => getWord(KeysLang.freeTrial);
   String get premiumMensal => getWord(KeysLang.premiumMensal);
@@ -83,6 +86,7 @@ class AppLocalization {
   String get expense => getWord(KeysLang.expense);
   String get pending => getWord(KeysLang.pending);
   String get paid => getWord(KeysLang.paid);
+  String get pay => getWord(KeysLang.pay);
   String get dueToday => getWord(KeysLang.dueToday);
   String get overdue => getWord(KeysLang.overdue);
   String get canceled => getWord(KeysLang.canceled);

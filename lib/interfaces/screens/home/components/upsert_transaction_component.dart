@@ -56,7 +56,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
 
     if (widget.transaction != null) {
       _descriptionEC.text = widget.transaction!.description;
-      _amountEC.text = widget.transaction!.amount.toString();
+      _amountEC.text = widget.transaction!.amount.centsToString();
       _internalNoteEC.text = widget.transaction!.internalNote ?? '';
       _customerNoteEC.text = widget.transaction!.customerNote ?? '';
       _paymentInfoEC.text = widget.transaction!.paymentInfo ?? '';
@@ -70,6 +70,13 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
     _vm.updateTransaction.addListener(_onUpdateListener);
     _customerFN.addListener(_onCustomerListener);
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _amountEC.text = CurrencyTextInputFormatter.simpleCurrency(locale: context.locale).formatString(
+          widget.transaction!.amount.centsToString(),
+        );
+      }
+    });
   }
 
   @override
@@ -149,9 +156,8 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
 
   void _onCustomerListener() {
     if (_customerFN.hasFocus) return;
-    if (_customerEC.text != _customer?.name) {
+    if (_customer == null) {
       setState(() {
-        _customer = null;
         _customerEC.clear();
       });
     }
@@ -240,7 +246,10 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                               .map<DropdownMenuEntry<CustomerModel>>(
                                 (x) => DropdownMenuEntry<CustomerModel>(
                                   value: x,
-                                  label: '${x.name} ${x.phone ?? x.document}',
+                                  label: x.name,
+                                  trailingIcon: (x.phone != null || x.document != null)
+                                      ? Text((x.phone ?? x.document)!, style: context.textTheme.small)
+                                      : null,
                                 ),
                               )
                               .toList(),
@@ -307,6 +316,12 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                   controller: _descriptionEC,
                   inputType: .text,
                   lines: 2,
+                  validator: (value) {
+                    if (value?.trim().isEmpty ?? true) {
+                      return context.words.requiredField;
+                    }
+                    return null;
+                  },
                 ),
                 AppInputStack(
                   label: context.words.paymentInfo,

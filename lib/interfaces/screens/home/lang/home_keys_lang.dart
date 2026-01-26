@@ -7,12 +7,20 @@ class HomeKeysLang {
   static const String transactionUpdated = 'transactionUpdated';
   static const String amount = 'amount';
   static const String dueDate = 'dueDate';
+  static const String confirmDelete = 'confirmDelete';
+  static const String confirmDeleteWarning = 'confirmDeleteWarning';
   static const String customerNote = 'customerNote';
   static const String internalNote = 'internalNote';
   static const String paymentInfo = 'paymentInfo';
   static const String description = 'description';
+  static const String paidAt = 'paidAt';
   static const String confirmClearFiles = 'confirmClearFiles';
   static const String clearAll = 'clearAll';
   static const String addFiles = 'addFiles';
   static const String confirmRemoveFile = 'confirmRemoveFile';
+  static const String selectDatePayment = 'selectDatePayment';
+  static const String confirmCancelPayment = 'confirmCancelPayment';
+  static const String cancelAll = 'cancelAll';
+  static const String payAll = 'payAll';
+  static const String confirmCancelAll = 'confirmCancelAll';
 }

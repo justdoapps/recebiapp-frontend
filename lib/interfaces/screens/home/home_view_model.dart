@@ -60,6 +60,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   final Set<TransactionModel> _selectedTransactions = {};
+  List<TransactionModel> get selectedTransactions => List.unmodifiable(_selectedTransactions);
   bool get isSelectionMode => _selectedTransactions.isNotEmpty;
   bool isSelected(TransactionModel transaction) => _selectedTransactions.contains(transaction);
 
@@ -134,8 +135,10 @@ class HomeViewModel extends ChangeNotifier {
   Future<Result<void>> _updateStatus(UpdateStatusArgs args) async =>
       (await _repository.updateStatus(
         id: args.transaction.id,
-        status: args.status,
-        paymentDate: args.paymentDate,
+        body: {
+          'status': args.status.name,
+          if (args.paymentDate != null) 'paidAt': args.paymentDate!.toIso8601String(),
+        },
       )).fold(
         (error) => Result.error(error),
         (value) {
@@ -147,12 +150,16 @@ class HomeViewModel extends ChangeNotifier {
   Future<Result<void>> _batchUpdateStatus(BatchUpdateStatusArgs args) async =>
       (await _repository.updateBatchStatus(
         ids: args.transactions.map((e) => e.id).toList(),
-        status: args.status,
-        paymentDate: args.paymentDate,
+        body: {
+          'ids': args.transactions.map((e) => e.id).toList(),
+          'status': args.status.name,
+          if (args.paymentDate != null) 'paidAt': args.paymentDate!.toIso8601String(),
+        },
       )).fold(
         (error) => Result.error(error),
         (value) {
           listTransactions.execute();
+          clearSelection();
           return const Result.ok(null);
         },
       );

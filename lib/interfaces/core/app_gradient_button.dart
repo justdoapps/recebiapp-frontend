@@ -7,10 +7,12 @@ class AppGradientButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.label,
+    this.height = 50,
   });
 
   final VoidCallback onPressed;
   final String label;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +27,20 @@ class AppGradientButton extends StatelessWidget {
       ),
       child: Ink(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: RadialGradient(
+            radius: 4,
             colors: [
               context.theme.colorScheme.primary,
               context.theme.colorScheme.primary.withValues(alpha: .8),
             ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            // begin: Alignment.topLeft,
+            // end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: SizedBox(
           width: double.infinity,
-          height: 50,
+          height: height,
           child: Center(
             child: Text(
               label,

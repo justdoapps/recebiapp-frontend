@@ -40,6 +40,27 @@ extension ModalsExtension on BuildContext {
     );
   }
 
+  Future<T?> showGenericDialog<T>({
+    Widget? title,
+    required Widget content,
+    List<Widget> actions = const [],
+    bool barrierDismissible = true,
+  }) {
+    return showAdaptiveDialog<T>(
+      context: this,
+      barrierDismissible: barrierDismissible,
+      builder: (_) => AlertDialog.adaptive(
+        iconColor: theme.colorScheme.onSurface,
+        title: title,
+        content: Padding(
+          padding: .only(top: title != null ? 0 : 16),
+          child: content,
+        ),
+        actions: actions,
+      ),
+    );
+  }
+
   Future<bool?> showInformationDialog({
     Widget? title,
     required Widget content,

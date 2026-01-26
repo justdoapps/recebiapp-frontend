@@ -14,6 +14,7 @@ class HomeListTransactionsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
+      shrinkWrap: true,
       slivers: transactions.isEmpty
           ? [
               SliverFillRemaining(

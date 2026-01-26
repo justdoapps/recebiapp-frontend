@@ -18,6 +18,8 @@ class KeysLang {
   static const or = 'or';
   static const edit = 'edit';
   static const cancel = 'cancel';
+  static const cancelPayment = 'cancelPayment';
+  static const uncancel = 'uncancel';
   static const confirm = 'confirm';
   static const themeMode = 'themeMode';
   static const darkMode = 'darkMode';
@@ -39,6 +41,8 @@ class KeysLang {
   static const expense = 'expense';
   static const pending = 'pending';
   static const paid = 'paid';
+  static const pay = 'pay';
+  static const delete = 'delete';
   static const dueToday = 'dueToday';
   static const overdue = 'overdue';
   static const canceled = 'canceled';

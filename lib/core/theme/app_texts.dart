@@ -5,7 +5,7 @@ import 'app_colors.dart';
 import 'app_typography.dart';
 
 abstract class AppTexts {
-  static final textTheme = GoogleFonts.walterTurncoatTextTheme();
+  static final textTheme = GoogleFonts.robotoTextTheme();
 
   static const _defaultTypography = AppTypography(
     veryLarge: TextStyle(fontSize: 32, fontWeight: .w400),

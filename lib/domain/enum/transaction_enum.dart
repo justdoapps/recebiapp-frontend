@@ -19,7 +19,7 @@ enum TransactionType {
     }
   }
 
-  String getCustomerTypeName(BuildContext context) {
+  String getTypeName(BuildContext context) {
     switch (this) {
       case TransactionType.INCOME:
         return context.words.income;
@@ -47,7 +47,7 @@ enum TransactionStatus {
     }
   }
 
-  String getCustomerTypeName(BuildContext context) {
+  String getStatusName(BuildContext context) {
     switch (this) {
       case TransactionStatus.PENDING:
         return context.words.pending;
@@ -59,6 +59,21 @@ enum TransactionStatus {
         return context.words.overdue;
       case TransactionStatus.CANCELED:
         return context.words.canceled;
+    }
+  }
+
+  Color getStatusColor() {
+    switch (this) {
+      case TransactionStatus.PENDING:
+        return Colors.blue;
+      case TransactionStatus.PAID:
+        return Colors.green;
+      case TransactionStatus.DUE_TODAY:
+        return Colors.purple;
+      case TransactionStatus.OVERDUE:
+        return Colors.red;
+      case TransactionStatus.CANCELED:
+        return Colors.grey;
     }
   }
 }

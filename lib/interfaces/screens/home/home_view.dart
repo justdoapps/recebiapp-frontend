@@ -7,6 +7,9 @@ import '../../../core/extensions/message_extension.dart';
 import '../../../core/mixins/loading_mixin.dart';
 import '../../../core/utils/debouncer.dart';
 import '../../../core/utils/throttler.dart';
+import '../../../domain/enum/transaction_enum.dart';
+import '../../../domain/models/transaction_model.dart';
+import '../../core/adaptive_date_picker.dart';
 import '../../core/app_drawer.dart';
 import 'components/upsert_transaction_component.dart';
 import 'home_view_model.dart';
@@ -63,12 +66,92 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
   @override
   Widget build(BuildContext context) {
     return Selector<HomeViewModel, bool>(
-      selector: (_, vm) => vm.isSelectionMode,
+      selector: (_, _) => _vm.isSelectionMode,
       builder: (_, isSelectionMode, _) {
         return isSelectionMode
             ? Scaffold(
-                persistentFooterButtons: [],
-                body: HomeListTransactionsWidget(transactions: _vm.filteredTransactions),
+                persistentFooterDecoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: context.theme.colorScheme.onSurface.withValues(alpha: .5),
+                    ),
+                  ),
+                ),
+                persistentFooterButtons: [
+                  Row(
+                    mainAxisAlignment: .spaceAround,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          _vm.clearSelection();
+                        },
+                        child: Text(
+                          context.words.back,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context.showConfirmationDialog(
+                            content: Text(
+                              context.words.confirmCancelAll(_vm.selectedTransactions.length),
+                              style: context.textTheme.medium,
+                            ),
+                            onConfirm: () {
+                              final BatchUpdateStatusArgs args = (
+                                paymentDate: null,
+                                status: TransactionStatus.CANCELED,
+                                transactions: _vm.selectedTransactions,
+                              );
+                              _vm.batchUpdateStatus.execute(args);
+                            },
+                          );
+                        },
+                        child: Text(context.words.cancelAll),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          DateTime? paymentDate;
+                          await context.showConfirmationDialog(
+                            title: Text(context.words.selectDatePayment, style: context.textTheme.medium),
+                            content: Column(
+                              mainAxisSize: .min,
+                              children: [
+                                SizedBox(
+                                  width: .maxFinite,
+                                  child: AdaptiveDatePicker(
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                                    lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                                    onDateChanged: (value) {
+                                      paymentDate = value;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onConfirm: () {
+                              final BatchUpdateStatusArgs args = (
+                                paymentDate: paymentDate,
+                                status: TransactionStatus.PAID,
+                                transactions: _vm.selectedTransactions,
+                              );
+                              _vm.batchUpdateStatus.execute(args);
+                            },
+                          );
+                        },
+                        child: Text(context.words.payAll),
+                      ),
+                    ],
+                  ),
+                ],
+                body: SafeArea(
+                  child: Selector<HomeViewModel, List<TransactionModel>>(
+                    selector: (_, _) => _vm.selectedTransactions,
+                    builder: (_, _, _) {
+                      return HomeListTransactionsWidget(transactions: _vm.filteredTransactions);
+                    },
+                  ),
+                ),
               )
             : Scaffold(
                 appBar: AppBar(
@@ -93,7 +176,16 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                 ),
                 body: RefreshIndicator(
                   onRefresh: _vm.listTransactions.execute,
-                  child: HomeListTransactionsWidget(transactions: _vm.filteredTransactions),
+                  child: Selector<HomeViewModel, List<TransactionModel>>(
+                    selector: (_, _) => _vm.filteredTransactions,
+                    builder: (_, filteredTransactions, _) {
+                      return Column(
+                        children: [
+                          HomeListTransactionsWidget(transactions: filteredTransactions),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               );
       },

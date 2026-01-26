@@ -85,7 +85,7 @@ class TransactionRepositoryImpl with HttpRequestMixin implements TransactionRepo
   @override
   Future<Result<void>> update(TransactionUpdateDto transaction) async {
     final result = await safeRequest(
-      request: () => _http.put('/transaction/${transaction.id}', data: transaction.toBodyRequest()),
+      request: () => _http.patch('/transaction/${transaction.id}', data: transaction.toBodyRequest()),
     );
 
     return result.fold(
@@ -95,17 +95,8 @@ class TransactionRepositoryImpl with HttpRequestMixin implements TransactionRepo
   }
 
   @override
-  Future<Result<void>> updateBatchStatus({
-    required List<String> ids,
-    required TransactionStatus status,
-    DateTime? paymentDate,
-  }) async {
-    final body = {
-      'ids': ids,
-      'status': status.name,
-      if (paymentDate != null) 'paymentDate': paymentDate.toIso8601String(),
-    };
-    final result = await safeRequest(request: () => _http.put('/transaction/batch-status', data: body));
+  Future<Result<void>> updateBatchStatus({required List<String> ids, required Map<String, dynamic> body}) async {
+    final result = await safeRequest(request: () => _http.patch('/transaction/batch/status', data: body));
 
     return result.fold(
       (error) => Result.error(error),
@@ -116,14 +107,9 @@ class TransactionRepositoryImpl with HttpRequestMixin implements TransactionRepo
   @override
   Future<Result<void>> updateStatus({
     required String id,
-    required TransactionStatus status,
-    DateTime? paymentDate,
+    required Map<String, dynamic> body,
   }) async {
-    final body = {
-      'status': status.name,
-      if (paymentDate != null) 'paymentDate': paymentDate.toIso8601String(),
-    };
-    final result = await safeRequest(request: () => _http.put('/transaction/$id/status', data: body));
+    final result = await safeRequest(request: () => _http.patch('/transaction/status/$id', data: body));
 
     return result.fold(
       (error) => Result.error(error),
