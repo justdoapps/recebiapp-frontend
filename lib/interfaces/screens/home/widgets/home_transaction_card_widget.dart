@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../../core/extensions/build_context_extension.dart';
 import '../../../../core/extensions/dialog_extension.dart';
 import '../../../../core/extensions/formatters_extension.dart';
+import '../../../../core/extensions/message_extension.dart';
+import '../../../../core/routing/routes.dart';
 import '../../../../domain/enum/transaction_enum.dart';
 import '../../../../domain/models/transaction_model.dart';
 import '../../../core/adaptive_date_picker.dart';
@@ -115,7 +121,9 @@ class HomeTransactionCardWidget extends StatelessWidget {
                     child: Row(
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context.push('${Routes.home}${Routes.transactionDetails}', extra: transaction);
+                          },
                           icon: Icon(
                             Icons.open_in_new,
                             color: context.theme.colorScheme.primary,
@@ -127,11 +135,23 @@ class HomeTransactionCardWidget extends StatelessWidget {
                               transaction.status != TransactionStatus.CANCELED &&
                               transaction.customer.phone != null,
                           child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.message, //TODO icone do whatsapp
-                              color: context.theme.colorScheme.primary,
-                            ),
+                            onPressed: () async {
+                              //TODO escolher a menssagem padrão
+                              final phoneNumber = transaction.customer.phone!;
+                              final encodedMessage = Uri.encodeComponent('');
+                              final whatsappUrl = Uri.parse('https://wa.me/$phoneNumber?text=$encodedMessage');
+                              try {
+                                if (!await launchUrl(whatsappUrl, mode: LaunchMode.externalNonBrowserApplication)) {
+                                  throw Exception('Não foi possível abrir o WhatsApp.');
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  context.showMessage(message: 'Não foi possível abrir o WhatsApp.');
+                                }
+                              }
+                            },
+                            icon: const FaIcon(FontAwesomeIcons.whatsapp),
+                            color: context.theme.colorScheme.primary,
                           ),
                         ),
                         transaction.status != TransactionStatus.PAID

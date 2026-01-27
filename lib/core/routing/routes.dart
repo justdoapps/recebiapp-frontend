@@ -4,4 +4,5 @@ abstract final class Routes {
   static const monetization = '/monetization';
   static const splash = '/';
   static const customer = '/customer';
+  static const transactionDetails = '/transactiondetails';
 }

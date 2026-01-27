@@ -181,7 +181,7 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                     builder: (_, filteredTransactions, _) {
                       return Column(
                         children: [
-                          HomeListTransactionsWidget(transactions: filteredTransactions),
+                          Expanded(child: HomeListTransactionsWidget(transactions: filteredTransactions)),
                         ],
                       );
                     },

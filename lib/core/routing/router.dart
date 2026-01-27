@@ -3,12 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/repositories/auth/auth_repository.dart';
+import '../../domain/models/transaction_model.dart';
 import '../../interfaces/screens/auth/auth_view.dart';
 import '../../interfaces/screens/auth/auth_view_model.dart';
 import '../../interfaces/screens/customer/customer_view.dart';
 import '../../interfaces/screens/customer/customer_view_model.dart';
 import '../../interfaces/screens/home/home_view.dart';
 import '../../interfaces/screens/home/home_view_model.dart';
+import '../../interfaces/screens/home/transaction_details_view.dart';
 import '../../interfaces/screens/monetization/monetization_view.dart';
 import '../../interfaces/screens/monetization/monetization_view_model.dart';
 import '../../interfaces/screens/splash/splash_view.dart';
@@ -45,7 +47,19 @@ final appRouter = GoRouter(
           child: const HomeView(),
         );
       },
-      routes: [],
+      routes: [
+        GoRoute(
+          path: Routes.transactionDetails,
+          builder: (context, state) {
+            final transaction = state.extra as TransactionModel?;
+            if (transaction == null) return const SizedBox.shrink(); //TODO erro screen
+            return ChangeNotifierProvider(
+              create: (_) => HomeViewModel(repository: getIt(), listCustomersUseCase: getIt()),
+              child: TransactionDetailsView(transaction: transaction),
+            );
+          },
+        ),
+      ],
     ),
     GoRoute(
       path: Routes.monetization,

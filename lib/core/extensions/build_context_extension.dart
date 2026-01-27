@@ -6,6 +6,7 @@ import '../theme/app_typography.dart';
 extension ThemeExtension on BuildContext {
   AppLocalization get words => AppLocalization.of(this);
   ThemeData get theme => Theme.of(this);
+  ColorScheme get colors => theme.colorScheme;
   AppTypography get textTheme => theme.extension<AppTypography>()!;
   double get height => MediaQuery.sizeOf(this).height;
   double get width => MediaQuery.sizeOf(this).width;
