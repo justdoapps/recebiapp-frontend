@@ -10,8 +10,35 @@ import 'components/register_component.dart';
 import 'lang/auth_localization_ext.dart';
 import 'widgets/logo_container_widget.dart';
 
-class AuthView extends StatelessWidget {
+class AuthView extends StatefulWidget {
   const AuthView({super.key});
+
+  @override
+  State<AuthView> createState() => _AuthViewState();
+}
+
+class _AuthViewState extends State<AuthView> with WidgetsBindingObserver {
+  bool _isKeyboardVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset = View.of(context).viewInsets.bottom;
+    setState(() {
+      _isKeyboardVisible = bottomInset > 0.0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +46,7 @@ class AuthView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            LogoContainerWidget(title: context.words.appName),
+            _isKeyboardVisible ? const SizedBox(height: 30) : LogoContainerWidget(title: context.words.appName),
             const SizedBox(height: 30),
             const LoginComponent(),
             const SizedBox(height: 30),

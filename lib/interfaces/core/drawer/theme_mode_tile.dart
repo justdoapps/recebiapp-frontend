@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/extensions/build_context_extension.dart';
-import '../../settings_controller.dart';
+import '../../../core/extensions/build_context_extension.dart';
+import '../../../settings_controller.dart';
 
 class ThemeModeTile extends StatelessWidget {
   const ThemeModeTile({super.key});

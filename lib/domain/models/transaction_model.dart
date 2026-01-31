@@ -37,7 +37,6 @@ class TransactionModel {
     required this.updatedAt,
   });
 
-  //TODO retornar o objeto customer e não somente o id do backend
   factory TransactionModel.fromMap(Map<String, dynamic> json) {
     return TransactionModel(
       id: json['id'],

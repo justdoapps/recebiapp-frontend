@@ -7,11 +7,14 @@ import '../data/repositories/customer/customer_repository.dart';
 import '../data/repositories/customer/customer_repository_impl.dart';
 import '../data/repositories/monetization/monetization_repository.dart';
 import '../data/repositories/monetization/monetization_repository_impl.dart';
+import '../data/repositories/recurrence_template/template_repository.dart';
+import '../data/repositories/recurrence_template/template_tepository_impl.dart';
 import '../data/repositories/transaction/transaction_repository.dart';
 import '../data/repositories/transaction/transaction_repository_impl.dart';
 import '../data/services/http_service.dart';
 import '../data/services/preferences_service.dart';
 import '../domain/use_cases/list_customers_use_case.dart';
+import '../domain/use_cases/template_list_use_case.dart';
 
 final getIt = GetIt.instance;
 
@@ -34,9 +37,15 @@ Future<void> initDependencies() async {
   getIt.registerLazySingleton<TransactionRepository>(
     () => TransactionRepositoryImpl(http: getIt()),
   );
+  getIt.registerLazySingleton<TemplateRepository>(
+    () => TemplateTepositoryImpl(http: getIt()),
+  );
 
   //use cases
   getIt.registerLazySingleton<ListCustomersUseCase>(
     () => ListCustomersUseCase(repository: getIt()),
+  );
+  getIt.registerLazySingleton<TemplateListUseCase>(
+    () => TemplateListUseCase(repository: getIt()),
   );
 }

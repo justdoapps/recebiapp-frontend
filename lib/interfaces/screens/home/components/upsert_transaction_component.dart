@@ -64,19 +64,19 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
       _type = widget.transaction!.type;
       _customer = widget.transaction!.customer;
       _status = widget.transaction!.status;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _amountEC.text = CurrencyTextInputFormatter.simpleCurrency(locale: context.locale).formatString(
+            widget.transaction!.amount.centsToString(),
+          );
+        }
+      });
     }
 
     _vm.createTransaction.addListener(_onCreateListener);
     _vm.updateTransaction.addListener(_onUpdateListener);
     _customerFN.addListener(_onCustomerListener);
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        _amountEC.text = CurrencyTextInputFormatter.simpleCurrency(locale: context.locale).formatString(
-          widget.transaction!.amount.centsToString(),
-        );
-      }
-    });
   }
 
   @override

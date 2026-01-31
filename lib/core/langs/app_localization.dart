@@ -9,6 +9,8 @@ import '../../interfaces/screens/home/lang/home_pt_lang.dart';
 import '../../interfaces/screens/home/lang/home_us_lang.dart';
 import '../../interfaces/screens/monetization/lang/monetization_pt_lang.dart';
 import '../../interfaces/screens/monetization/lang/monetization_us_lang.dart';
+import '../../interfaces/screens/recurrence_template/lang/template_pt_lang.dart';
+import '../../interfaces/screens/recurrence_template/lang/template_us_lang.dart';
 import 'keys_lang.dart';
 import 'pt_lang.dart';
 import 'us_lang.dart';
@@ -26,6 +28,7 @@ class AppLocalization {
           ...MonetizationPtLang.words,
           ...CustomerPtLang.words,
           ...HomePtLang.words,
+          ...TemplatePtLang.words,
         };
         break;
       case 'en':
@@ -36,6 +39,7 @@ class AppLocalization {
           ...MonetizationUsLang.words,
           ...CustomerUsLang.words,
           ...HomeUsLang.words,
+          ...TemplateUsLang.words,
         };
     }
   }
@@ -91,6 +95,19 @@ class AppLocalization {
   String get overdue => getWord(KeysLang.overdue);
   String get canceled => getWord(KeysLang.canceled);
   String get edit => getWord(KeysLang.edit);
+  String get interval => getWord(KeysLang.interval);
+  String get intervalDays => getWord(KeysLang.intervalDays);
+  String get monthly => getWord(KeysLang.monthly);
+  String get weekly => getWord(KeysLang.weekly);
+  String get dayOfMonth => getWord(KeysLang.dayOfMonth);
+  String get dayOfWeek => getWord(KeysLang.dayOfWeek);
+  String get monday => getWord(KeysLang.monday);
+  String get tuesday => getWord(KeysLang.tuesday);
+  String get wednesday => getWord(KeysLang.wednesday);
+  String get thursday => getWord(KeysLang.thursday);
+  String get friday => getWord(KeysLang.friday);
+  String get saturday => getWord(KeysLang.saturday);
+  String get sunday => getWord(KeysLang.sunday);
 
   // String nameTrips(String name) => _get('nameTrips').replaceAll('{name}', name);
 }

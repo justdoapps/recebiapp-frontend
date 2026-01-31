@@ -8,7 +8,7 @@ import '../../../core/mixins/loading_mixin.dart';
 import '../../../core/utils/debouncer.dart';
 import '../../../core/utils/throttler.dart';
 import '../../../domain/enum/customer_type_enum.dart';
-import '../../core/app_drawer.dart';
+import '../../core/drawer/app_drawer.dart';
 import '../../core/app_search_bar.dart';
 import 'components/upsert_customer_component.dart';
 import 'customer_view_model.dart';

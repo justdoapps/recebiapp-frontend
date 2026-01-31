@@ -48,6 +48,19 @@ abstract class UsLang {
     KeysLang.overdue: 'Overdue',
     KeysLang.canceled: 'Canceled',
     KeysLang.edit: 'Edit',
+    KeysLang.interval: 'Interval',
+    KeysLang.intervalDays: 'Interval in days',
+    KeysLang.monthly: 'Monthly',
+    KeysLang.weekly: 'Weekly',
+    KeysLang.dayOfMonth: 'Day of month',
+    KeysLang.dayOfWeek: 'Day of week',
+    KeysLang.monday: 'Monday',
+    KeysLang.tuesday: 'Tuesday',
+    KeysLang.wednesday: 'Wednesday',
+    KeysLang.thursday: 'Thursday',
+    KeysLang.friday: 'Friday',
+    KeysLang.saturday: 'Saturday',
+    KeysLang.sunday: 'Sunday',
   };
 
   static const wordsAuth = AuthUsLang;

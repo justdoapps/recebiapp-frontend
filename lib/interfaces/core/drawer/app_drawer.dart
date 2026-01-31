@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/dependencies.dart';
-import '../../core/extensions/build_context_extension.dart';
-import '../../core/extensions/formatters_extension.dart';
-import '../../core/routing/routes.dart';
-import '../../data/repositories/auth/auth_repository.dart';
-import '../../domain/enum/monetization_enum.dart';
-import '../screens/customer/lang/customer_localization_ext.dart';
+import '../../../core/dependencies.dart';
+import '../../../core/extensions/build_context_extension.dart';
+import '../../../core/extensions/formatters_extension.dart';
+import '../../../core/routing/routes.dart';
+import '../../../data/repositories/auth/auth_repository.dart';
+import '../../../domain/enum/monetization_enum.dart';
+import '../../screens/customer/lang/customer_localization_ext.dart';
+import '../../screens/recurrence_template/lang/template_localization_ext.dart';
 import 'locale_selector.dart';
 import 'theme_mode_tile.dart';
 
@@ -36,6 +37,9 @@ class AppDrawer extends StatelessWidget {
         break;
       case 2:
         context.go(Routes.customer);
+        break;
+      case 3:
+        context.go(Routes.template);
         break;
     }
   }
@@ -143,6 +147,11 @@ class AppDrawer extends StatelessWidget {
             icon: const Icon(Icons.people_outline, size: 20),
             selectedIcon: Icon(Icons.people, size: 20, color: context.theme.colorScheme.primary),
             label: Text(context.words.customerAndSupplier),
+          ),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.abc, size: 20),
+            selectedIcon: Icon(Icons.abc, size: 20, color: context.theme.colorScheme.primary),
+            label: Text(context.words.templates),
           ),
         ],
       ),

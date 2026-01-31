@@ -48,6 +48,19 @@ abstract class PtLang {
     KeysLang.overdue: 'Atrasado',
     KeysLang.canceled: 'Cancelado',
     KeysLang.edit: 'Editar',
+    KeysLang.interval: 'Intervalo',
+    KeysLang.intervalDays: 'Intervalo em dias',
+    KeysLang.monthly: 'Mensal',
+    KeysLang.weekly: 'Semanal',
+    KeysLang.dayOfMonth: 'Dia do mês',
+    KeysLang.dayOfWeek: 'Dia da semana',
+    KeysLang.monday: 'Segunda-feira',
+    KeysLang.tuesday: 'Terça-feira',
+    KeysLang.wednesday: 'Quarta-feira',
+    KeysLang.thursday: 'Quinta-feira',
+    KeysLang.friday: 'Sexta-feira',
+    KeysLang.saturday: 'Sábado',
+    KeysLang.sunday: 'Domingo',
   };
 
   static const wordsAuth = AuthPtLang;

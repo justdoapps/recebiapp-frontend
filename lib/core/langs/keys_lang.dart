@@ -46,4 +46,17 @@ class KeysLang {
   static const dueToday = 'dueToday';
   static const overdue = 'overdue';
   static const canceled = 'canceled';
+  static const interval = 'interval';
+  static const intervalDays = 'intervalDays';
+  static const monthly = 'monthly';
+  static const weekly = 'weekly';
+  static const dayOfMonth = 'dayOfMonth';
+  static const dayOfWeek = 'dayOfWeek';
+  static const monday = 'monday';
+  static const tuesday = 'tuesday';
+  static const wednesday = 'wednesday';
+  static const thursday = 'thursday';
+  static const friday = 'friday';
+  static const saturday = 'saturday';
+  static const sunday = 'sunday';
 }

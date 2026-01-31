@@ -9,21 +9,53 @@
       "flutterMode": "debug",
       "deviceId": "emulator-5556"
     },
+    // {
+    //   "name": "emulator (Performance)",
+    //   "request": "launch",
+    //   "type": "dart",
+    //   "program": "lib/main.dart",
+    //   "flutterMode": "profile",
+    //   "deviceId": "emulator-5556"
+    // },
+    // {
+    //   "name": "emulator (Release)",
+    //   "request": "launch",
+    //   "type": "dart",
+    //   "program": "lib/main.dart",
+    //   "flutterMode": "release",
+    //   "deviceId": "emulator-5556"
+    // },
     {
-      "name": "emulator (Performance)",
+      "name": "A54",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "flutterMode": "profile",
-      "deviceId": "emulator-5556"
+      "flutterMode": "debug",
+      "deviceId": "adb-RXCW305H9MF-lpAoeg._adb-tls-connect._tcp"
     },
     {
-      "name": "emulator (Release)",
+      "name": "A54 USB",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "flutterMode": "release",
-      "deviceId": "emulator-5556"
+      "flutterMode": "debug",
+      "deviceId": "RXCW305H9MF"
     }
+    // {
+    //   "name": "A54 (Performance)",
+    //   "request": "launch",
+    //   "type": "dart",
+    //   "program": "lib/main.dart",
+    //   "flutterMode": "profile",
+    //   "deviceId": "adb-RXCW305H9MF-lpAoeg._adb-tls-connect._tcp"
+    // },
+    // {
+    //   "name": "A54 (Release)",
+    //   "request": "launch",
+    //   "type": "dart",
+    //   "program": "lib/main.dart",
+    //   "flutterMode": "release",
+    //   "deviceId": "adb-RXCW305H9MF-lpAoeg._adb-tls-connect._tcp"
+    // }
   ]
 }

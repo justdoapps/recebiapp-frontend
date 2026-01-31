@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../core/extensions/build_context_extension.dart';
 import '../../../core/extensions/message_extension.dart';
 import '../../../core/mixins/loading_mixin.dart';
-import '../../core/app_drawer.dart';
+import '../../core/drawer/app_drawer.dart';
 import 'lang/monetization_localization_ext.dart';
 import 'monetization_view_model.dart';
 import 'widgets/current_plan_widget.dart';

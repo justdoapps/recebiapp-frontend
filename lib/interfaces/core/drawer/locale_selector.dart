@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../settings_controller.dart';
+import '../../../settings_controller.dart';
 
 class LocaleSelector extends StatelessWidget {
   const LocaleSelector({super.key});
@@ -10,7 +10,7 @@ class LocaleSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
 
-    final currentSelection = {settings.locale?.languageCode ?? 'pt'};
+    final currentSelection = {settings.locale?.languageCode ?? Localizations.localeOf(context).languageCode};
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -44,9 +44,7 @@ class LocaleSelector extends StatelessWidget {
               selected: currentSelection,
               onSelectionChanged: (Set<String> newSelection) {
                 final langCode = newSelection.first;
-                final newLocale = langCode == 'pt'
-                    ? const Locale('pt', 'BR')
-                    : const Locale('en', 'US');
+                final newLocale = langCode == 'pt' ? const Locale('pt', 'BR') : const Locale('en', 'US');
 
                 context.read<SettingsController>().updateLocale(newLocale);
               },

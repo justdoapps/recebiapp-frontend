@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'platform_widget.dart'; // Sua classe abstrata
+import 'config/platform_widget.dart'; // Sua classe abstrata
 
 class AdaptiveDatePicker extends PlatformWidget<Widget, Widget> {
   final DateTime initialDate;

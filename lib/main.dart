@@ -8,7 +8,7 @@ import 'core/langs/app_localization.dart';
 import 'core/routing/router.dart';
 import 'core/theme/app_theme.dart';
 import 'data/services/preferences_service.dart';
-import 'interfaces/core/app_scroll_behavior.dart';
+import 'interfaces/core/config/app_scroll_behavior.dart';
 import 'settings_controller.dart';
 
 void main() async {
