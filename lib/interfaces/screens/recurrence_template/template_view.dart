@@ -52,6 +52,7 @@ class _TemplateViewState extends State<TemplateView> with LoadingMixin {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<TemplateViewModel>();
     return Scaffold(
       appBar: AppBar(title: Text(context.words.templates)),
       drawer: const AppDrawer(),
@@ -71,37 +72,33 @@ class _TemplateViewState extends State<TemplateView> with LoadingMixin {
         icon: const Icon(Icons.add),
         label: Text(context.words.newData),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const .all(18.0),
-          child: RefreshIndicator(
-            onRefresh: _vm.list.execute,
-            child: CustomScrollView(
-              slivers: _vm.templates.isEmpty
-                  ? [
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(
-                          child: Text(context.words.noTemplatesFound, style: context.textTheme.large),
-                        ),
-                      ),
-                    ]
-                  : [
-                      SliverList.separated(
-                        itemBuilder: (context, index) {
-                          return TemplateCardWidget(template: _vm.templates[index], vm: _vm);
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Divider();
-                        },
-                        itemCount: _vm.templates.length,
-                      ),
-                      const SliverToBoxAdapter(
-                        child: SizedBox(height: 80),
-                      ),
-                    ],
-            ),
-          ),
+      body: RefreshIndicator(
+        onRefresh: _vm.list.execute,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: _vm.templates.isEmpty
+              ? [
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Text(context.words.noTemplatesFound, style: context.textTheme.large),
+                    ),
+                  ),
+                ]
+              : [
+                  SliverList.separated(
+                    itemBuilder: (context, index) {
+                      return TemplateCardWidget(template: _vm.templates[index], vm: _vm);
+                    },
+                    separatorBuilder: (context, index) {
+                      return const Divider();
+                    },
+                    itemCount: _vm.templates.length,
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 80),
+                  ),
+                ],
         ),
       ),
     );

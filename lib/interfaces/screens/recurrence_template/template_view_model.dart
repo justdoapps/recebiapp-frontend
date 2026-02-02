@@ -33,6 +33,7 @@ class TemplateViewModel extends ChangeNotifier {
     (value) {
       _templates.clear();
       _templates = List<TemplateModel>.from(value);
+      notifyListeners();
       return const Result.ok(null);
     },
   );
@@ -41,6 +42,7 @@ class TemplateViewModel extends ChangeNotifier {
     (error) => Result.error(error),
     (value) {
       list.execute();
+      notifyListeners();
       return const Result.ok(null);
     },
   );
@@ -49,6 +51,7 @@ class TemplateViewModel extends ChangeNotifier {
     (error) => Result.error(error),
     (value) {
       list.execute();
+      notifyListeners();
       return const Result.ok(null);
     },
   );

@@ -94,7 +94,7 @@ class _CustomerViewState extends State<CustomerView> with LoadingMixin {
           label: Text(context.words.newData),
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: ListenableBuilder(
             listenable: _vm,
             child: Padding(

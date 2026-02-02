@@ -36,7 +36,7 @@ class TemplateTepositoryImpl with HttpRequestMixin implements TemplateRepository
 
     return result.fold(
       (error) => Result.error(error),
-      (value) => value.statusCode == 201 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
+      (value) => value.statusCode == 204 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
     );
   }
 
@@ -65,7 +65,7 @@ class TemplateTepositoryImpl with HttpRequestMixin implements TemplateRepository
 
     return result.fold(
       (error) => Result.error(error),
-      (value) => value.statusCode == 201 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
+      (value) => value.statusCode == 200 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
     );
   }
 }

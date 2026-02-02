@@ -28,4 +28,6 @@ extension HomeLocalization on AppLocalization {
   String get payAll => getWord(HomeKeysLang.payAll);
   String confirmCancelAll(int quantity) =>
       getWord(HomeKeysLang.confirmCancelAll).replaceAll('{{quantity}}', quantity.toString());
+  String get invalidDayOfMonth => getWord(HomeKeysLang.invalidDayOfMonth);
+  String get invalidIntervalDays => getWord(HomeKeysLang.invalidIntervalDays);
 }

@@ -23,4 +23,6 @@ class HomeKeysLang {
   static const String cancelAll = 'cancelAll';
   static const String payAll = 'payAll';
   static const String confirmCancelAll = 'confirmCancelAll';
+  static const String invalidDayOfMonth = 'invalidDayOfMonth';
+  static const String invalidIntervalDays = 'invalidIntervalDays';
 }

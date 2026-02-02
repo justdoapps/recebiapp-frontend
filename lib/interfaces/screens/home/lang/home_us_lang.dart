@@ -27,5 +27,7 @@ abstract class HomeUsLang {
     HomeKeysLang.cancelAll: 'Cancel selected',
     HomeKeysLang.payAll: 'Pay selected',
     HomeKeysLang.confirmCancelAll: 'Do you want to cancel all {{quantity}} selected?',
+    HomeKeysLang.invalidDayOfMonth: 'Invalid day',
+    HomeKeysLang.invalidIntervalDays: 'Invalid interval',
   };
 }

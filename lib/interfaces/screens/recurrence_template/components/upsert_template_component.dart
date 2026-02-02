@@ -1,5 +1,6 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -32,12 +33,14 @@ class _UpsertTemplateComponentState extends State<UpsertTemplateComponent> with 
   final _formKey = GlobalKey<FormState>();
   final _nameEC = TextEditingController();
   final _amountEC = TextEditingController();
+  final _intervalDaysEC = TextEditingController(text: '1');
+  final _dayOfMonthEC = TextEditingController();
 
   TransactionType _type = TransactionType.INCOME;
   Frequency _frequency = Frequency.INTERVAL;
-  int? _intervalDays;
+  int? _intervalDays = 1;
   int? _dayOfMonth;
-  int? _dayOfWeek;
+  FrequencyWeekly? _dayOfWeek;
 
   @override
   void initState() {
@@ -50,12 +53,15 @@ class _UpsertTemplateComponentState extends State<UpsertTemplateComponent> with 
       _frequency = widget.template!.frequency;
       _intervalDays = widget.template!.intervalDays;
       _dayOfMonth = widget.template!.dayOfMonth;
-      _dayOfWeek = widget.template!.dayOfWeek;
+      _dayOfWeek = widget.template!.dayOfWeek != null ? FrequencyWeekly.fromInt(widget.template!.dayOfWeek!) : null;
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _amountEC.text = CurrencyTextInputFormatter.simpleCurrency(locale: context.locale).formatString(
             widget.template!.amount.centsToString(),
           );
+          _intervalDaysEC.text = widget.template!.intervalDays?.toString() ?? '';
+          _dayOfMonthEC.text = widget.template!.dayOfMonth?.toString() ?? '';
         }
       });
     }
@@ -70,6 +76,10 @@ class _UpsertTemplateComponentState extends State<UpsertTemplateComponent> with 
     _formKey.currentState?.dispose();
     _vm.create.removeListener(_onCreateListener);
     _vm.update.removeListener(_onUpdateListener);
+    _nameEC.dispose();
+    _amountEC.dispose();
+    _intervalDaysEC.dispose();
+    _dayOfMonthEC.dispose();
     super.dispose();
   }
 
@@ -103,6 +113,9 @@ class _UpsertTemplateComponentState extends State<UpsertTemplateComponent> with 
   void _save() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
+    _intervalDays = int.tryParse(_intervalDaysEC.text);
+    _dayOfMonth = int.tryParse(_dayOfMonthEC.text);
+
     if (widget.template == null) {
       _vm.create.execute(
         TemplateCreateDto(
@@ -110,9 +123,9 @@ class _UpsertTemplateComponentState extends State<UpsertTemplateComponent> with 
           amount: _amountEC.text.toCents(),
           type: _type,
           frequency: _frequency,
-          intervalDays: _intervalDays,
-          dayOfMonth: _dayOfMonth,
-          dayOfWeek: _dayOfWeek,
+          intervalDays: _frequency == Frequency.INTERVAL ? _intervalDays : null,
+          dayOfMonth: _frequency == Frequency.MONTHLY ? _dayOfMonth : null,
+          dayOfWeek: _frequency == Frequency.WEEKLY ? _dayOfWeek?.getInt() : null,
         ),
       );
     } else {
@@ -123,9 +136,15 @@ class _UpsertTemplateComponentState extends State<UpsertTemplateComponent> with 
           amount: _amountEC.text.toCents() != widget.template!.amount ? _amountEC.text.toCents() : null,
           type: _type != widget.template!.type ? _type : null,
           frequency: _frequency != widget.template!.frequency ? _frequency : null,
-          intervalDays: _intervalDays != widget.template!.intervalDays ? _intervalDays : null,
-          dayOfMonth: _dayOfMonth != widget.template!.dayOfMonth ? _dayOfMonth : null,
-          dayOfWeek: _dayOfWeek != widget.template!.dayOfWeek ? _dayOfWeek : null,
+          intervalDays: _frequency == Frequency.INTERVAL && _intervalDays != widget.template!.intervalDays
+              ? _intervalDays
+              : null,
+          dayOfMonth: _frequency == Frequency.MONTHLY && _dayOfMonth != widget.template!.dayOfMonth
+              ? _dayOfMonth
+              : null,
+          dayOfWeek: _frequency == Frequency.WEEKLY && _dayOfWeek?.getInt() != widget.template!.dayOfWeek
+              ? _dayOfWeek?.getInt()
+              : null,
         ),
       );
     }
@@ -191,7 +210,6 @@ class _UpsertTemplateComponentState extends State<UpsertTemplateComponent> with 
                     return null;
                   },
                 ),
-
                 AppInputStack(
                   label: context.words.amount,
                   controller: _amountEC,
@@ -206,64 +224,155 @@ class _UpsertTemplateComponentState extends State<UpsertTemplateComponent> with 
                   ],
                 ),
 
-                Row(
-                  spacing: 10,
-                  children: [
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) => DropdownMenu<Frequency>(
-                          width: constraints.maxWidth,
-                          label: Text(context.words.frequency),
-                          leadingIcon: Icon(Icons.timer_outlined, color: context.theme.colorScheme.primary),
-                          requestFocusOnTap: true,
-                          initialSelection: _frequency,
-                          textStyle: context.textTheme.small,
-                          onSelected: (value) {
-                            setState(() {
-                              if (value != null) _frequency = value;
-                            });
-                          },
+                LayoutBuilder(
+                  builder: (context, constraints) => DropdownMenu<Frequency>(
+                    width: constraints.maxWidth,
+                    label: Text(context.words.frequency),
+                    leadingIcon: Icon(Icons.timer_outlined, color: context.theme.colorScheme.primary),
+                    requestFocusOnTap: true,
+                    initialSelection: _frequency,
+                    textStyle: context.textTheme.small,
+                    onSelected: (value) {
+                      setState(() {
+                        if (value != null) {
+                          _frequency = value;
+                          _dayOfMonthEC.clear();
+                          _intervalDaysEC.clear();
+                          _dayOfWeek = null;
+                          _intervalDays = null;
+                          _dayOfMonth = null;
+                          if (_frequency == Frequency.WEEKLY) {
+                            _dayOfWeek = FrequencyWeekly.MONDAY;
+                          } else if (_frequency == Frequency.MONTHLY) {
+                            _dayOfMonth = 1;
+                            _dayOfMonthEC.text = '1';
+                          } else if (_frequency == Frequency.INTERVAL) {
+                            _intervalDays = 1;
+                            _intervalDaysEC.text = '1';
+                          }
+                        }
+                      });
+                    },
 
-                          dropdownMenuEntries: Frequency.values
-                              .map((x) => DropdownMenuEntry(value: x, label: x.getContextName(context)))
-                              .toList(),
+                    dropdownMenuEntries: Frequency.values
+                        .map((x) => DropdownMenuEntry(value: x, label: x.getContextName(context)))
+                        .toList(),
+                  ),
+                ),
+
+                Row(
+                  mainAxisAlignment: .spaceAround,
+                  children: [
+                    if (_frequency == Frequency.INTERVAL) ...[
+                      IconButton.filledTonal(
+                        onPressed: () {
+                          final day = int.tryParse(_intervalDaysEC.text);
+                          if (day != null && day > 1) {
+                            _intervalDaysEC.text = (day - 1).toString();
+                          }
+                        },
+                        icon: const Icon(Icons.remove),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const .only(top: 20.0),
+                          child: AppInputStack(
+                            controller: _intervalDaysEC,
+                            label: context.words.intervalDays,
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                            validator: (value) {
+                              if (_frequency != Frequency.INTERVAL) return null;
+                              if (value == null || value.isEmpty) {
+                                return context.words.requiredField;
+                              }
+                              final day = int.tryParse(value);
+                              if (day == null || day < 1 || day > 365) {
+                                return context.words.invalidIntervalDays;
+                              }
+                              return null;
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    if (_frequency == Frequency.INTERVAL) ...[
-                      TextFormField(
-                        controller: _intervalDaysEC,
-                        decoration: InputDecoration(labelText: context.words.intervalDays),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return context.words.requiredField;
+                      IconButton.filledTonal(
+                        onPressed: () {
+                          final day = int.tryParse(_intervalDaysEC.text);
+                          if (day != null && day < 365) {
+                            _intervalDaysEC.text = (day + 1).toString();
                           }
-                          return null;
                         },
+                        icon: const Icon(Icons.add),
                       ),
                     ],
                     if (_frequency == Frequency.MONTHLY) ...[
-                      TextFormField(
-                        controller: _dayOfMonthEC,
-                        decoration: InputDecoration(labelText: context.words.dayOfMonth),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return context.words.requiredField;
+                      IconButton.filledTonal(
+                        onPressed: () {
+                          final day = int.tryParse(_dayOfMonthEC.text);
+                          if (day != null && day > 1) {
+                            _dayOfMonthEC.text = (day - 1).toString();
                           }
-                          return null;
                         },
+                        icon: const Icon(Icons.remove),
+                      ),
+
+                      Expanded(
+                        child: Padding(
+                          padding: const .only(top: 20.0),
+                          child: AppInputStack(
+                            controller: _dayOfMonthEC,
+                            label: context.words.dayOfMonth,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(2),
+                            ],
+                            validator: (value) {
+                              if (_frequency != Frequency.MONTHLY) return null;
+                              if (value == null || value.isEmpty) {
+                                return context.words.requiredField;
+                              }
+                              final day = int.tryParse(value);
+                              if (day == null || day < 1 || day > 31) {
+                                return context.words.invalidDayOfMonth;
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+
+                      IconButton.filledTonal(
+                        onPressed: () {
+                          final day = int.tryParse(_dayOfMonthEC.text);
+                          if (day != null && day < 31) {
+                            _dayOfMonthEC.text = (day + 1).toString();
+                          }
+                        },
+                        icon: const Icon(Icons.add),
                       ),
                     ],
                     if (_frequency == Frequency.WEEKLY) ...[
-                      TextFormField(
-                        controller: _dayOfWeekEC,
-                        decoration: InputDecoration(labelText: context.words.dayOfWeek),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return context.words.requiredField;
-                          }
-                          return null;
-                        },
+                      Expanded(
+                        child: Padding(
+                          padding: const .only(top: 20.0),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => DropdownMenu<FrequencyWeekly>(
+                              width: constraints.maxWidth,
+                              menuHeight: 200,
+                              label: Text(context.words.frequency),
+                              leadingIcon: const SizedBox(width: 20),
+                              requestFocusOnTap: true,
+                              initialSelection: FrequencyWeekly.MONDAY,
+                              textStyle: context.textTheme.small,
+                              onSelected: (value) {
+                                if (value != null) _dayOfWeek = value;
+                              },
+
+                              dropdownMenuEntries: FrequencyWeekly.values
+                                  .map((x) => DropdownMenuEntry(value: x, label: x.getContextName(context)))
+                                  .toList(),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ],

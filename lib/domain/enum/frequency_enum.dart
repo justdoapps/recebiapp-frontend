@@ -23,11 +23,11 @@ enum Frequency {
   String getContextName(BuildContext context) {
     switch (this) {
       case Frequency.INTERVAL:
-        return context.words.interval;
+        return context.words.intervalDays;
       case Frequency.MONTHLY:
-        return context.words.monthly;
+        return context.words.dayOfMonth;
       case Frequency.WEEKLY:
-        return context.words.weekly;
+        return context.words.dayOfWeek;
     }
   }
 }

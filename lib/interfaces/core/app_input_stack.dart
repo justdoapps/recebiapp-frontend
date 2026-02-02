@@ -48,22 +48,25 @@ class AppInputStack extends StatefulWidget {
 }
 
 class _AppInputStackState extends State<AppInputStack> {
-  bool obscure = false;
-  late FocusNode _focusNode;
+  // bool obscure = false;
+  // late FocusNode _focusNode;
 
   @override
   void initState() {
-    obscure = widget.obscure;
-    _focusNode = widget.focusNode ?? FocusNode();
-    if (widget.requestFocus) _focusNode.requestFocus();
-    _focusNode.addListener(() => setState(() {}));
+    // obscure = widget.obscure;
+    // _focusNode = widget.focusNode ?? FocusNode();
+    // if (widget.requestFocus) _focusNode.requestFocus();
+    // _focusNode.addListener(() => setState(() {}));
     super.initState();
+    if (widget.requestFocus && widget.focusNode != null) {
+      widget.focusNode?.requestFocus();
+    }
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
-    widget.controller.dispose();
+    // _focusNode.dispose();
+    // widget.controller.dispose();
     super.dispose();
   }
 
@@ -78,7 +81,7 @@ class _AppInputStackState extends State<AppInputStack> {
             maxLength: widget.maxLength,
             style: context.textTheme.verySmall,
             controller: widget.controller,
-            obscureText: obscure,
+            obscureText: widget.obscure,
             textAlign: .center,
             textAlignVertical: .center,
             autocorrect: false,
@@ -86,7 +89,7 @@ class _AppInputStackState extends State<AppInputStack> {
             textInputAction: widget.inputAction,
             onChanged: widget.onChanged,
             onFieldSubmitted: widget.onSubmitted,
-            focusNode: _focusNode,
+            focusNode: widget.focusNode,
             inputFormatters: widget.inputFormatters,
             maxLines: widget.lines ?? 1,
             minLines: 1,
