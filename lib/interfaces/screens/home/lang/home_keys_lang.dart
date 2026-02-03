@@ -23,6 +23,12 @@ class HomeKeysLang {
   static const String cancelAll = 'cancelAll';
   static const String payAll = 'payAll';
   static const String confirmCancelAll = 'confirmCancelAll';
+  static const String newRecurrence = 'newRecurrence';
+  static const String newTransaction = 'newTransaction';
   static const String invalidDayOfMonth = 'invalidDayOfMonth';
   static const String invalidIntervalDays = 'invalidIntervalDays';
+  static const String templateRecurrence = 'templateRecurrence';
+  static const String recurrenceCreated = 'recurrenceCreated';
+  static const String errorCreateRecurrence = 'errorCreateRecurrence';
+  static const String startDate = 'startDate';
 }

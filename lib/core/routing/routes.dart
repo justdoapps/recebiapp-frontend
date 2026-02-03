@@ -6,4 +6,5 @@ abstract final class Routes {
   static const customer = '/customer';
   static const transactionDetails = '/transactiondetails';
   static const template = '/template';
+  static const recurrence = '/recurrence';
 }

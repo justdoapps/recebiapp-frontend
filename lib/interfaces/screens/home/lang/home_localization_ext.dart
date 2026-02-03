@@ -30,4 +30,10 @@ extension HomeLocalization on AppLocalization {
       getWord(HomeKeysLang.confirmCancelAll).replaceAll('{{quantity}}', quantity.toString());
   String get invalidDayOfMonth => getWord(HomeKeysLang.invalidDayOfMonth);
   String get invalidIntervalDays => getWord(HomeKeysLang.invalidIntervalDays);
+  String get newRecurrence => getWord(HomeKeysLang.newRecurrence);
+  String get newTransaction => getWord(HomeKeysLang.newTransaction);
+  String get templateRecurrence => getWord(HomeKeysLang.templateRecurrence);
+  String get recurrenceCreated => getWord(HomeKeysLang.recurrenceCreated);
+  String get errorCreateRecurrence => getWord(HomeKeysLang.errorCreateRecurrence);
+  String get startDate => getWord(HomeKeysLang.startDate);
 }

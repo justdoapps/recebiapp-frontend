@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../../core/utils/command.dart';
 import '../../../core/utils/result.dart';
+import '../../../data/repositories/recurrence/recurrence_repository.dart';
 import '../../../data/repositories/transaction/transaction_repository.dart';
+import '../../../domain/dtos/recurrence_upsert_dto.dart';
 import '../../../domain/dtos/transaction_upsert_dto.dart';
 import '../../../domain/enum/customer_type_enum.dart';
 import '../../../domain/enum/transaction_enum.dart';
 import '../../../domain/models/customer_model.dart';
+import '../../../domain/models/template_model.dart';
 import '../../../domain/models/transaction_model.dart';
 import '../../../domain/use_cases/list_customers_use_case.dart';
+import '../../../domain/use_cases/template_list_use_case.dart';
 
 typedef UpdateStatusArgs = ({TransactionModel transaction, TransactionStatus status, DateTime? paymentDate});
 typedef BatchUpdateStatusArgs = ({
@@ -20,10 +24,18 @@ typedef BatchUpdateStatusArgs = ({
 class HomeViewModel extends ChangeNotifier {
   final TransactionRepository _repository;
   final ListCustomersUseCase _listCustomersUseCase;
+  final TemplateListUseCase _templateListUseCase;
+  final RecurrenceRepository _recurrenceRepository;
 
-  HomeViewModel({required TransactionRepository repository, required ListCustomersUseCase listCustomersUseCase})
-    : _repository = repository,
-      _listCustomersUseCase = listCustomersUseCase {
+  HomeViewModel({
+    required TransactionRepository repository,
+    required ListCustomersUseCase listCustomersUseCase,
+    required TemplateListUseCase templateListUseCase,
+    required RecurrenceRepository recurrenceRepository,
+  }) : _repository = repository,
+       _listCustomersUseCase = listCustomersUseCase,
+       _templateListUseCase = templateListUseCase,
+       _recurrenceRepository = recurrenceRepository {
     listTransactions = Command0<void>(_listTransactions);
     listCustomers = Command0<void>(_listCustomers);
     createTransaction = Command1<void, TransactionCreateDto>(_createTransaction);
@@ -31,12 +43,15 @@ class HomeViewModel extends ChangeNotifier {
     deleteTransaction = Command1<void, TransactionModel>(_deleteTransaction);
     updateStatus = Command1<void, UpdateStatusArgs>(_updateStatus);
     batchUpdateStatus = Command1<void, BatchUpdateStatusArgs>(_batchUpdateStatus);
+    listTemplates = Command0<void>(_listTemplates);
+    createRecurrence = Command1<void, RecurrenceCreateDto>(_createRecurrence);
   }
 
   List<TransactionModel> _allTransactions = [];
   List<TransactionModel> _filteredTransactions = [];
   String _filterByNameCustomer = '';
   List<CustomerModel> _customers = [];
+  List<TemplateModel> _templates = [];
 
   List<TransactionModel> get filteredTransactions => List.unmodifiable(_filteredTransactions);
   List<CustomerModel> get customers => List.unmodifiable(
@@ -45,6 +60,10 @@ class HomeViewModel extends ChangeNotifier {
   List<CustomerModel> get suppliers => List.unmodifiable(
     _customers.where((c) => c.type == CustomerType.SUPPLIER || c.type == CustomerType.BOTH).toList(),
   );
+  List<TemplateModel> get templatesIncome =>
+      List.unmodifiable(_templates.where((t) => t.type == TransactionType.INCOME).toList());
+  List<TemplateModel> get templatesExpense =>
+      List.unmodifiable(_templates.where((t) => t.type == TransactionType.EXPENSE).toList());
 
   void filterTransactionsByNameCustomer({String name = ''}) {
     _filteredTransactions.clear();
@@ -80,6 +99,8 @@ class HomeViewModel extends ChangeNotifier {
 
   late Command0<void> listTransactions;
   late Command0<void> listCustomers;
+  late Command0<void> listTemplates;
+  late Command1<void, RecurrenceCreateDto> createRecurrence;
   late Command1<void, TransactionCreateDto> createTransaction;
   late Command1<void, TransactionUpdateDto> updateTransaction;
   late Command1<void, TransactionModel> deleteTransaction;
@@ -104,6 +125,24 @@ class HomeViewModel extends ChangeNotifier {
       return const Result.ok(null);
     },
   );
+
+  Future<Result<void>> _listTemplates() async => (await _templateListUseCase.listFromCacheWithoutInactive()).fold(
+    (error) => Result.error(error),
+    (value) {
+      _templates.clear();
+      _templates = List<TemplateModel>.from(value);
+      return const Result.ok(null);
+    },
+  );
+
+  Future<Result<void>> _createRecurrence(RecurrenceCreateDto recurrence) async =>
+      (await _recurrenceRepository.create(recurrence)).fold(
+        (error) => Result.error(error),
+        (value) {
+          //TODO: criar transação a partir do template ou aviso visual para usuário da primeira data
+          return const Result.ok(null);
+        },
+      );
 
   Future<Result<void>> _createTransaction(TransactionCreateDto transaction) async =>
       (await _repository.create(transaction)).fold(

@@ -11,6 +11,7 @@ import '../../../domain/enum/transaction_enum.dart';
 import '../../../domain/models/transaction_model.dart';
 import '../../core/adaptive_date_picker.dart';
 import '../../core/drawer/app_drawer.dart';
+import 'components/upsert_recurrence_component.dart';
 import 'components/upsert_transaction_component.dart';
 import 'home_view_model.dart';
 import 'lang/home_localization_ext.dart';
@@ -159,20 +160,40 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                 ),
                 drawer: const AppDrawer(),
                 floatingActionButtonLocation: .centerDocked,
-                floatingActionButton: FloatingActionButton.extended(
-                  onPressed: () {
-                    context.showBottomSheet(
-                      child: Padding(
-                        padding: .only(bottom: context.viewInsetsBottom),
-                        child: ChangeNotifierProvider.value(
-                          value: _vm,
-                          child: const UpsertTransactionComponent(),
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.add),
-                  label: Text(context.words.newData),
+                floatingActionButton: Row(
+                  mainAxisAlignment: .spaceAround,
+                  children: [
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        context.showBottomSheet(
+                          child: Padding(
+                            padding: .only(bottom: context.viewInsetsBottom),
+                            child: ChangeNotifierProvider.value(
+                              value: _vm,
+                              child: const UpsertRecurrenceComponent(),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.add, size: 20),
+                      label: Text(context.words.newRecurrence, style: context.textTheme.verySmall),
+                    ),
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        context.showBottomSheet(
+                          child: Padding(
+                            padding: .only(bottom: context.viewInsetsBottom),
+                            child: ChangeNotifierProvider.value(
+                              value: _vm,
+                              child: const UpsertTransactionComponent(),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.add, size: 20),
+                      label: Text(context.words.newTransaction, style: context.textTheme.verySmall),
+                    ),
+                  ],
                 ),
                 body: RefreshIndicator(
                   onRefresh: _vm.listTransactions.execute,

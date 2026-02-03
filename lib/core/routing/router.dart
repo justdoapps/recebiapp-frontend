@@ -45,7 +45,12 @@ final appRouter = GoRouter(
       path: Routes.home,
       builder: (context, state) {
         return ChangeNotifierProvider(
-          create: (_) => HomeViewModel(repository: getIt(), listCustomersUseCase: getIt()),
+          create: (_) => HomeViewModel(
+            repository: getIt(),
+            listCustomersUseCase: getIt(),
+            templateListUseCase: getIt(),
+            recurrenceRepository: getIt(),
+          ),
           child: const HomeView(),
         );
       },
@@ -56,7 +61,12 @@ final appRouter = GoRouter(
             final transaction = state.extra as TransactionModel?;
             if (transaction == null) return const SizedBox.shrink(); //TODO erro screen
             return ChangeNotifierProvider(
-              create: (_) => HomeViewModel(repository: getIt(), listCustomersUseCase: getIt()),
+              create: (_) => HomeViewModel(
+                repository: getIt(),
+                listCustomersUseCase: getIt(),
+                templateListUseCase: getIt(),
+                recurrenceRepository: getIt(),
+              ),
               child: TransactionDetailsView(transaction: transaction),
             );
           },
@@ -90,6 +100,15 @@ final appRouter = GoRouter(
         );
       },
     ),
+    // GoRoute(
+    //   path: Routes.recurrence,
+    //   builder: (context, state) {
+    //     return ChangeNotifierProvider(
+    //       create: (_) => RecurrenceViewModel(repository: getIt(), listUseCase: getIt()),
+    //       child: const RecurrenceView(),
+    //     );
+    //   },
+    // ),
   ],
 );
 

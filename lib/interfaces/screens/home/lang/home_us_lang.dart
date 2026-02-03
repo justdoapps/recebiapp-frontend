@@ -29,5 +29,11 @@ abstract class HomeUsLang {
     HomeKeysLang.confirmCancelAll: 'Do you want to cancel all {{quantity}} selected?',
     HomeKeysLang.invalidDayOfMonth: 'Invalid day',
     HomeKeysLang.invalidIntervalDays: 'Invalid interval',
+    HomeKeysLang.newRecurrence: 'New recurrence',
+    HomeKeysLang.newTransaction: 'New transaction',
+    HomeKeysLang.templateRecurrence: 'Template recurrence',
+    HomeKeysLang.recurrenceCreated: 'Recurrence created',
+    HomeKeysLang.errorCreateRecurrence: 'Error creating recurrence',
+    HomeKeysLang.startDate: 'Start date',
   };
 }

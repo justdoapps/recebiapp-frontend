@@ -49,10 +49,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
   @override
   void initState() {
     _vm = context.read<HomeViewModel>();
-
-    if (_vm.customers.isEmpty) {
-      _vm.listCustomers.execute();
-    }
+    _vm.listCustomers.execute();
 
     if (widget.transaction != null) {
       _descriptionEC.text = widget.transaction!.description;
@@ -88,6 +85,11 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
     _formKey.currentState?.dispose();
     _customerEC.dispose();
     _customerFN.dispose();
+    _descriptionEC.dispose();
+    _amountEC.dispose();
+    _internalNoteEC.dispose();
+    _customerNoteEC.dispose();
+    _paymentInfoEC.dispose();
 
     super.dispose();
   }

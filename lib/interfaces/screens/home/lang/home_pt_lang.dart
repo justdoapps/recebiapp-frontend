@@ -29,5 +29,11 @@ abstract class HomePtLang {
     HomeKeysLang.confirmCancelAll: 'Deseja cancelar todos os {{quantity}} selecionados?',
     HomeKeysLang.invalidDayOfMonth: 'Dia inválido',
     HomeKeysLang.invalidIntervalDays: 'Intervalo inválido',
+    HomeKeysLang.newRecurrence: 'Nova recorrência',
+    HomeKeysLang.newTransaction: 'Nova transação',
+    HomeKeysLang.templateRecurrence: 'Modelo de recorrência',
+    HomeKeysLang.recurrenceCreated: 'Recorrência criada',
+    HomeKeysLang.startDate: 'Data inicial',
+    HomeKeysLang.errorCreateRecurrence: 'Erro ao criar recorrência',
   };
 }
