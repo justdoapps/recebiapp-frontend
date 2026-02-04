@@ -13,6 +13,8 @@ import '../../interfaces/screens/home/home_view_model.dart';
 import '../../interfaces/screens/home/transaction_details_view.dart';
 import '../../interfaces/screens/monetization/monetization_view.dart';
 import '../../interfaces/screens/monetization/monetization_view_model.dart';
+import '../../interfaces/screens/recurrence/recurrence_view.dart';
+import '../../interfaces/screens/recurrence/recurrence_view_model.dart';
 import '../../interfaces/screens/recurrence_template/template_view.dart';
 import '../../interfaces/screens/recurrence_template/template_view_model.dart';
 import '../../interfaces/screens/splash/splash_view.dart';
@@ -100,15 +102,17 @@ final appRouter = GoRouter(
         );
       },
     ),
-    // GoRoute(
-    //   path: Routes.recurrence,
-    //   builder: (context, state) {
-    //     return ChangeNotifierProvider(
-    //       create: (_) => RecurrenceViewModel(repository: getIt(), listUseCase: getIt()),
-    //       child: const RecurrenceView(),
-    //     );
-    //   },
-    // ),
+    GoRoute(
+      path: Routes.recurrence,
+      builder: (context, state) {
+        return ChangeNotifierProvider(
+          create: (_) => RecurrenceViewModel(
+            repository: getIt(),
+          ),
+          child: const RecurrenceView(),
+        );
+      },
+    ),
   ],
 );
 

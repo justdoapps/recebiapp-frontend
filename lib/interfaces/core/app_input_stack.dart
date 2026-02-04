@@ -23,6 +23,7 @@ class AppInputStack extends StatefulWidget {
     this.onTap,
     this.readOnly = false,
     this.maxLength,
+    this.enabled = true,
   });
 
   final String label;
@@ -42,6 +43,7 @@ class AppInputStack extends StatefulWidget {
   final VoidCallback? onTap;
   final bool readOnly;
   final int? maxLength;
+  final bool enabled;
 
   @override
   State<AppInputStack> createState() => _AppInputStackState();
@@ -85,6 +87,7 @@ class _AppInputStackState extends State<AppInputStack> {
             textAlign: .center,
             textAlignVertical: .center,
             autocorrect: false,
+            enabled: widget.enabled,
             keyboardType: widget.inputType,
             textInputAction: widget.inputAction,
             onChanged: widget.onChanged,

@@ -8,7 +8,21 @@ class TemplateListUseCase {
   TemplateListUseCase({required TemplateRepository repository}) : _repository = repository;
 
   Future<Result<List<TemplateModel>>> list() async {
-    return await _repository.list();
+    final result = await _repository.list();
+    return result.fold(
+      (err) => Result.error(err),
+      (value) {
+        value.sort(
+          (a, b) {
+            if (a.active != b.active) {
+              return a.active ? -1 : 1;
+            }
+            return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+          },
+        );
+        return Result.ok(List.unmodifiable(value));
+      },
+    );
   }
 
   Future<Result<List<TemplateModel>>> listFromCache() async {
@@ -22,7 +36,7 @@ class TemplateListUseCase {
       (value) {
         final list = value.where((e) => e.active).toList();
         list.sort((a, b) => a.name.compareTo(b.name));
-        return Result.ok(list);
+        return Result.ok(List.unmodifiable(list));
       },
     );
   }

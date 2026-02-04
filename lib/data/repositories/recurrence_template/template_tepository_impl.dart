@@ -17,7 +17,7 @@ class TemplateTepositoryImpl with HttpRequestMixin implements TemplateRepository
 
   //cache para transações apresentadas na tela inical (status pending, due today, overdue)
   List<TemplateModel> _listCached = [];
-  List<TemplateModel> get listCached => List.unmodifiable(_listCached);
+  List<TemplateModel> get listCached => List.from(_listCached);
   bool _hasCache = false;
 
   @override

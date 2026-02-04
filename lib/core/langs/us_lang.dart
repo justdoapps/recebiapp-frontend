@@ -61,6 +61,7 @@ abstract class UsLang {
     KeysLang.friday: 'Friday',
     KeysLang.saturday: 'Saturday',
     KeysLang.sunday: 'Sunday',
+    KeysLang.recurrence: 'Recurrence',
   };
 
   static const wordsAuth = AuthUsLang;

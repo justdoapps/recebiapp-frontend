@@ -17,6 +17,7 @@ import '../../../../domain/models/template_model.dart';
 import '../../../core/adaptive_date_picker.dart';
 import '../../../core/app_gradient_button.dart';
 import '../../../core/app_input_stack.dart';
+import '../../../core/loader_local.dart';
 import '../../customer/lang/customer_localization_ext.dart';
 import '../../recurrence_template/lang/template_localization_ext.dart';
 import '../home_view_model.dart';
@@ -54,11 +55,15 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
   void initState() {
     super.initState();
     _vm = context.read<HomeViewModel>();
+
+    _vm.createRecurrence.addListener(_onCreateListener);
+    _customerFN.addListener(_onCustomerFnListener);
+    _templateFN.addListener(_onTemplateFnListener);
+    _vm.listCustomers.addListener(_onListCustomersListener);
+    _vm.listTemplates.addListener(_onListTemplatesListener);
+
     _vm.listCustomers.execute();
     _vm.listTemplates.execute();
-    _vm.createRecurrence.addListener(_onCreateListener);
-    _customerFN.addListener(_onCustomerListener);
-    _templateFN.addListener(_onTemplateListener);
   }
 
   @override
@@ -105,7 +110,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
     );
   }
 
-  void _onCustomerListener() {
+  void _onCustomerFnListener() {
     if (_customerFN.hasFocus) return;
     if (_customer == null) {
       setState(() {
@@ -114,12 +119,31 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
     }
   }
 
-  void _onTemplateListener() {
+  void _onTemplateFnListener() {
     if (_templateFN.hasFocus) return;
     if (_template == null) {
       setState(() {
         _templateEC.clear();
       });
+    }
+  }
+
+  final _listCustomersListener = ValueNotifier(false);
+  final _listTemplatesListener = ValueNotifier(false);
+
+  void _onListCustomersListener() {
+    _vm.listCustomers.running ? _listCustomersListener.value = true : _listCustomersListener.value = false;
+    if (_vm.listCustomers.error) {
+      context.showMessage(title: context.words.errorListCustomers, type: MessageType.error);
+      _vm.listCustomers.clearResult();
+    }
+  }
+
+  void _onListTemplatesListener() {
+    _vm.listTemplates.running ? _listTemplatesListener.value = true : _listTemplatesListener.value = false;
+    if (_vm.listTemplates.error) {
+      context.showMessage(title: context.words.errorListTemplates, type: MessageType.error);
+      _vm.listTemplates.clearResult();
     }
   }
 
@@ -142,40 +166,73 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                 ),
                 const SizedBox(height: 10),
 
-                LayoutBuilder(
-                  builder: (context, constraints) => DropdownMenu<TemplateModel>(
-                    width: constraints.maxWidth,
-                    label: Text(context.words.templateRecurrence),
-                    leadingIcon: _template == null
-                        ? const Icon(Icons.search)
-                        : Icon(
-                            Icons.check_circle,
-                            color: context.theme.colorScheme.primary,
-                          ),
-                    enableFilter: true,
-                    requestFocusOnTap: true,
-                    initialSelection: _template,
-                    controller: _templateEC,
-                    focusNode: _templateFN,
-                    keyboardType: .name,
-                    textStyle: context.textTheme.small,
-                    onSelected: (value) {
-                      setState(() {
-                        _template = value;
-                      });
-                    },
+                ValueListenableBuilder(
+                  valueListenable: _listTemplatesListener,
+                  builder: (context, value, child) {
+                    return LoaderLocal(
+                      isLoading: value,
+                      child: child!,
+                    );
+                  },
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => DropdownMenu<TemplateModel>(
+                      width: constraints.maxWidth,
+                      label: Text(context.words.templateRecurrence),
+                      leadingIcon: _template == null
+                          ? const Icon(Icons.search)
+                          : Icon(
+                              Icons.check_circle,
+                              color: context.theme.colorScheme.primary,
+                            ),
+                      trailingIcon: _template == null
+                          ? const Icon(Icons.arrow_drop_down)
+                          : InkWell(
+                              child: const Icon(Icons.clear),
+                              onTap: () {
+                                setState(() {
+                                  _templateEC.clear();
+                                  _template = null;
+                                });
+                              },
+                            ),
+                      enableFilter: true,
+                      requestFocusOnTap: true,
+                      initialSelection: _template,
+                      controller: _templateEC,
+                      focusNode: _templateFN,
+                      keyboardType: .name,
+                      textStyle: context.textTheme.small,
 
-                    dropdownMenuEntries: _type == TransactionType.INCOME
-                        ? _vm.templatesIncome
-                              .map<DropdownMenuEntry<TemplateModel>>(
-                                (x) => DropdownMenuEntry<TemplateModel>(value: x, label: x.name),
-                              )
-                              .toList()
-                        : _vm.templatesExpense
-                              .map<DropdownMenuEntry<TemplateModel>>(
-                                (x) => DropdownMenuEntry<TemplateModel>(value: x, label: x.name),
-                              )
-                              .toList(),
+                      onSelected: (value) {
+                        setState(() {
+                          _template = value;
+                          _type = value!.type;
+                          _frequency = value.frequency;
+                          if (_frequency == Frequency.INTERVAL) {
+                            _intervalDays = value.intervalDays;
+                            _intervalDaysEC.text = value.intervalDays.toString();
+                          }
+                          if (_frequency == Frequency.MONTHLY) {
+                            _dayOfMonth = value.dayOfMonth;
+                            _dayOfMonthEC.text = value.dayOfMonth.toString();
+                          }
+                          if (_frequency == Frequency.WEEKLY) {
+                            _dayOfWeek = value.dayOfWeek != null ? FrequencyWeekly.fromInt(value.dayOfWeek!) : null;
+                          }
+                          _descriptionEC.text = value.name;
+                          _amountEC.text = CurrencyTextInputFormatter.simpleCurrency(locale: context.locale)
+                              .formatString(
+                                value.amount.centsToString(),
+                              );
+                        });
+                      },
+
+                      dropdownMenuEntries: _vm.templates
+                          .map<DropdownMenuEntry<TemplateModel>>(
+                            (x) => DropdownMenuEntry<TemplateModel>(value: x, label: x.name),
+                          )
+                          .toList(),
+                    ),
                   ),
                 ),
 
@@ -194,6 +251,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                           title: Text(context.words.income),
                           dense: true,
                           selected: _type == TransactionType.INCOME,
+                          enabled: _template == null,
                         ),
                       ),
                       Expanded(
@@ -202,13 +260,69 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                           title: Text(context.words.expense),
                           dense: true,
                           selected: _type == TransactionType.EXPENSE,
+                          enabled: _template == null,
                         ),
                       ),
                     ],
                   ),
                 ),
 
+                ValueListenableBuilder(
+                  valueListenable: _listCustomersListener,
+                  builder: (context, value, child) {
+                    return LoaderLocal(
+                      isLoading: value,
+                      child: child!,
+                    );
+                  },
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => DropdownMenu<CustomerModel>(
+                      width: constraints.maxWidth,
+                      label: Text(_type == TransactionType.INCOME ? context.words.customer : context.words.supplier),
+                      leadingIcon: _customer == null
+                          ? const Icon(Icons.search)
+                          : Icon(
+                              Icons.check_circle,
+                              color: context.theme.colorScheme.primary,
+                            ),
+                      enableFilter: true,
+                      requestFocusOnTap: true,
+                      initialSelection: _customer,
+                      controller: _customerEC,
+                      focusNode: _customerFN,
+                      keyboardType: .name,
+                      textStyle: context.textTheme.small,
+                      onSelected: (value) {
+                        setState(() {
+                          _customer = value;
+                        });
+                      },
+
+                      dropdownMenuEntries: _type == TransactionType.INCOME
+                          ? _vm.customers
+                                .map<DropdownMenuEntry<CustomerModel>>(
+                                  (x) => DropdownMenuEntry<CustomerModel>(value: x, label: x.name),
+                                )
+                                .toList()
+                          : _vm.suppliers
+                                .map<DropdownMenuEntry<CustomerModel>>(
+                                  (x) => DropdownMenuEntry<CustomerModel>(
+                                    value: x,
+                                    label: x.name,
+                                    trailingIcon: (x.phone != null || x.document != null)
+                                        ? Text((x.phone ?? x.document)!, style: context.textTheme.small)
+                                        : null,
+                                  ),
+                                )
+                                .toList(),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 15),
+
                 AppInputStack(
+                  enabled: _template == null,
                   label: context.words.description,
                   controller: _descriptionEC,
                   inputType: .text,
@@ -226,6 +340,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                   children: [
                     Expanded(
                       child: AppInputStack(
+                        enabled: _template == null,
                         label: context.words.amount,
                         controller: _amountEC,
                         inputType: .number,
@@ -277,50 +392,8 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                 ),
 
                 LayoutBuilder(
-                  builder: (context, constraints) => DropdownMenu<CustomerModel>(
-                    width: constraints.maxWidth,
-                    label: Text(_type == TransactionType.INCOME ? context.words.customer : context.words.supplier),
-                    leadingIcon: _customer == null
-                        ? const Icon(Icons.search)
-                        : Icon(
-                            Icons.check_circle,
-                            color: context.theme.colorScheme.primary,
-                          ),
-                    enableFilter: true,
-                    requestFocusOnTap: true,
-                    initialSelection: _customer,
-                    controller: _customerEC,
-                    focusNode: _customerFN,
-                    keyboardType: .name,
-                    textStyle: context.textTheme.small,
-                    onSelected: (value) {
-                      setState(() {
-                        _customer = value;
-                      });
-                    },
-
-                    dropdownMenuEntries: _type == TransactionType.INCOME
-                        ? _vm.customers
-                              .map<DropdownMenuEntry<CustomerModel>>(
-                                (x) => DropdownMenuEntry<CustomerModel>(value: x, label: x.name),
-                              )
-                              .toList()
-                        : _vm.suppliers
-                              .map<DropdownMenuEntry<CustomerModel>>(
-                                (x) => DropdownMenuEntry<CustomerModel>(
-                                  value: x,
-                                  label: x.name,
-                                  trailingIcon: (x.phone != null || x.document != null)
-                                      ? Text((x.phone ?? x.document)!, style: context.textTheme.small)
-                                      : null,
-                                ),
-                              )
-                              .toList(),
-                  ),
-                ),
-
-                LayoutBuilder(
                   builder: (context, constraints) => DropdownMenu<Frequency>(
+                    enabled: _template == null,
                     width: constraints.maxWidth,
                     label: Text(context.words.frequency),
                     leadingIcon: Icon(Icons.timer_outlined, color: context.theme.colorScheme.primary),
@@ -372,6 +445,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                         child: Padding(
                           padding: const .only(top: 20.0),
                           child: AppInputStack(
+                            enabled: _template == null,
                             controller: _intervalDaysEC,
                             label: context.words.intervalDays,
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -391,6 +465,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                       ),
                       IconButton.filledTonal(
                         onPressed: () {
+                          if (_template != null) return;
                           final day = int.tryParse(_intervalDaysEC.text);
                           if (day != null && day < 365) {
                             _intervalDaysEC.text = (day + 1).toString();
@@ -402,6 +477,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                     if (_frequency == Frequency.MONTHLY) ...[
                       IconButton.filledTonal(
                         onPressed: () {
+                          if (_template != null) return;
                           final day = int.tryParse(_dayOfMonthEC.text);
                           if (day != null && day > 1) {
                             _dayOfMonthEC.text = (day - 1).toString();
@@ -414,6 +490,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                         child: Padding(
                           padding: const .only(top: 20.0),
                           child: AppInputStack(
+                            enabled: _template == null,
                             controller: _dayOfMonthEC,
                             label: context.words.dayOfMonth,
                             inputFormatters: [
@@ -437,6 +514,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
 
                       IconButton.filledTonal(
                         onPressed: () {
+                          if (_template != null) return;
                           final day = int.tryParse(_dayOfMonthEC.text);
                           if (day != null && day < 31) {
                             _dayOfMonthEC.text = (day + 1).toString();

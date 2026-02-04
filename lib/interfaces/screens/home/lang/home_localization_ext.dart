@@ -36,4 +36,6 @@ extension HomeLocalization on AppLocalization {
   String get recurrenceCreated => getWord(HomeKeysLang.recurrenceCreated);
   String get errorCreateRecurrence => getWord(HomeKeysLang.errorCreateRecurrence);
   String get startDate => getWord(HomeKeysLang.startDate);
+  String get errorListCustomers => getWord(HomeKeysLang.errorListCustomers);
+  String get errorListTemplates => getWord(HomeKeysLang.errorListTemplates);
 }

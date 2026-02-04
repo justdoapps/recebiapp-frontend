@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../core/extensions/build_context_extension.dart';
 
-class LoadingLocal extends StatelessWidget {
+class LoaderLocal extends StatelessWidget {
   final bool isLoading;
   final Widget child;
   final String? loadingText;
 
-  const LoadingLocal({
+  const LoaderLocal({
     super.key,
     required this.isLoading,
     required this.child,

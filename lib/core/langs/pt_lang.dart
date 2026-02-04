@@ -61,6 +61,7 @@ abstract class PtLang {
     KeysLang.friday: 'Sexta-feira',
     KeysLang.saturday: 'Sábado',
     KeysLang.sunday: 'Domingo',
+    KeysLang.recurrence: 'Recorrência',
   };
 
   static const wordsAuth = AuthPtLang;

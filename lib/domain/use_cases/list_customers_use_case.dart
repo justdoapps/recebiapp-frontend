@@ -9,7 +9,21 @@ class ListCustomersUseCase {
   ListCustomersUseCase({required CustomerRepository repository}) : _repository = repository;
 
   Future<Result<List<CustomerModel>>> getAll() async {
-    return await _repository.getAll();
+    final result = await _repository.getAll();
+    return result.fold(
+      (err) => Result.error(err),
+      (value) {
+        value.sort(
+          (a, b) {
+            if (a.active != b.active) {
+              return a.active ? -1 : 1;
+            }
+            return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+          },
+        );
+        return Result.ok(List.unmodifiable(value));
+      },
+    );
   }
 
   Future<Result<List<CustomerModel>>> getAllFromCache() async {
@@ -24,8 +38,8 @@ class ListCustomersUseCase {
         final list = value
             .where((e) => e.active && (type != null ? e.type == type || e.type == CustomerType.BOTH : true))
             .toList();
-        list.sort((a, b) => a.name.compareTo(b.name));
-        return Result.ok(list);
+        list.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        return Result.ok(List.unmodifiable(list));
       },
     );
   }

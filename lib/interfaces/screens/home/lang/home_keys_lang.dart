@@ -31,4 +31,6 @@ class HomeKeysLang {
   static const String recurrenceCreated = 'recurrenceCreated';
   static const String errorCreateRecurrence = 'errorCreateRecurrence';
   static const String startDate = 'startDate';
+  static const String errorListCustomers = 'errorListCustomers';
+  static const String errorListTemplates = 'errorListTemplates';
 }

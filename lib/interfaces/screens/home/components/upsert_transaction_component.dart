@@ -16,6 +16,7 @@ import '../../../../domain/models/transaction_model.dart';
 import '../../../core/adaptive_date_picker.dart';
 import '../../../core/app_gradient_button.dart';
 import '../../../core/app_input_stack.dart';
+import '../../../core/loader_local.dart';
 import '../../customer/lang/customer_localization_ext.dart';
 import '../home_view_model.dart';
 import '../lang/home_localization_ext.dart';
@@ -49,7 +50,6 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
   @override
   void initState() {
     _vm = context.read<HomeViewModel>();
-    _vm.listCustomers.execute();
 
     if (widget.transaction != null) {
       _descriptionEC.text = widget.transaction!.description;
@@ -73,6 +73,10 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
     _vm.createTransaction.addListener(_onCreateListener);
     _vm.updateTransaction.addListener(_onUpdateListener);
     _customerFN.addListener(_onCustomerListener);
+    _vm.listCustomers.addListener(_onListCustomersListener);
+
+    _vm.listCustomers.execute();
+
     super.initState();
   }
 
@@ -165,6 +169,16 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
     }
   }
 
+  final _listCustomersListener = ValueNotifier(false);
+
+  void _onListCustomersListener() {
+    _vm.listCustomers.running ? _listCustomersListener.value = true : _listCustomersListener.value = false;
+    if (_vm.listCustomers.error) {
+      context.showMessage(title: context.words.errorListCustomers, type: MessageType.error);
+      _vm.listCustomers.clearResult();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -215,46 +229,55 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                   ),
                 ),
 
-                LayoutBuilder(
-                  builder: (context, constraints) => DropdownMenu<CustomerModel>(
-                    width: constraints.maxWidth,
-                    label: Text(_type == TransactionType.INCOME ? context.words.customer : context.words.supplier),
-                    leadingIcon: _customer == null
-                        ? const Icon(Icons.search)
-                        : Icon(
-                            Icons.check_circle,
-                            color: context.theme.colorScheme.primary,
-                          ),
-                    enableFilter: true,
-                    requestFocusOnTap: true,
-                    initialSelection: _customer,
-                    controller: _customerEC,
-                    focusNode: _customerFN,
-                    keyboardType: .name,
-                    textStyle: context.textTheme.small,
-                    onSelected: (value) {
-                      setState(() {
-                        _customer = value;
-                      });
-                    },
+                ValueListenableBuilder(
+                  valueListenable: _listCustomersListener,
+                  builder: (context, value, child) {
+                    return LoaderLocal(
+                      isLoading: value,
+                      child: child!,
+                    );
+                  },
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => DropdownMenu<CustomerModel>(
+                      width: constraints.maxWidth,
+                      label: Text(_type == TransactionType.INCOME ? context.words.customer : context.words.supplier),
+                      leadingIcon: _customer == null
+                          ? const Icon(Icons.search)
+                          : Icon(
+                              Icons.check_circle,
+                              color: context.theme.colorScheme.primary,
+                            ),
+                      enableFilter: true,
+                      requestFocusOnTap: true,
+                      initialSelection: _customer,
+                      controller: _customerEC,
+                      focusNode: _customerFN,
+                      keyboardType: .name,
+                      textStyle: context.textTheme.small,
+                      onSelected: (value) {
+                        setState(() {
+                          _customer = value;
+                        });
+                      },
 
-                    dropdownMenuEntries: _type == TransactionType.INCOME
-                        ? _vm.customers
-                              .map<DropdownMenuEntry<CustomerModel>>(
-                                (x) => DropdownMenuEntry<CustomerModel>(value: x, label: x.name),
-                              )
-                              .toList()
-                        : _vm.suppliers
-                              .map<DropdownMenuEntry<CustomerModel>>(
-                                (x) => DropdownMenuEntry<CustomerModel>(
-                                  value: x,
-                                  label: x.name,
-                                  trailingIcon: (x.phone != null || x.document != null)
-                                      ? Text((x.phone ?? x.document)!, style: context.textTheme.small)
-                                      : null,
-                                ),
-                              )
-                              .toList(),
+                      dropdownMenuEntries: _type == TransactionType.INCOME
+                          ? _vm.customers
+                                .map<DropdownMenuEntry<CustomerModel>>(
+                                  (x) => DropdownMenuEntry<CustomerModel>(value: x, label: x.name),
+                                )
+                                .toList()
+                          : _vm.suppliers
+                                .map<DropdownMenuEntry<CustomerModel>>(
+                                  (x) => DropdownMenuEntry<CustomerModel>(
+                                    value: x,
+                                    label: x.name,
+                                    trailingIcon: (x.phone != null || x.document != null)
+                                        ? Text((x.phone ?? x.document)!, style: context.textTheme.small)
+                                        : null,
+                                  ),
+                                )
+                                .toList(),
+                    ),
                   ),
                 ),
                 const Divider(),

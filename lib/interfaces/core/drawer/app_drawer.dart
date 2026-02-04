@@ -39,6 +39,9 @@ class AppDrawer extends StatelessWidget {
         context.go(Routes.customer);
         break;
       case 3:
+        context.go(Routes.recurrence);
+        break;
+      case 4:
         context.go(Routes.template);
         break;
     }
@@ -152,6 +155,11 @@ class AppDrawer extends StatelessWidget {
             icon: const Icon(Icons.abc, size: 20),
             selectedIcon: Icon(Icons.abc, size: 20, color: context.theme.colorScheme.primary),
             label: Text(context.words.templates),
+          ),
+          NavigationDrawerDestination(
+            icon: const Icon(Icons.repeat, size: 20),
+            selectedIcon: Icon(Icons.repeat, size: 20, color: context.theme.colorScheme.primary),
+            label: Text(context.words.recurrence),
           ),
         ],
       ),

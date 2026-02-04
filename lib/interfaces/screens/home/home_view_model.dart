@@ -60,10 +60,7 @@ class HomeViewModel extends ChangeNotifier {
   List<CustomerModel> get suppliers => List.unmodifiable(
     _customers.where((c) => c.type == CustomerType.SUPPLIER || c.type == CustomerType.BOTH).toList(),
   );
-  List<TemplateModel> get templatesIncome =>
-      List.unmodifiable(_templates.where((t) => t.type == TransactionType.INCOME).toList());
-  List<TemplateModel> get templatesExpense =>
-      List.unmodifiable(_templates.where((t) => t.type == TransactionType.EXPENSE).toList());
+  List<TemplateModel> get templates => List.unmodifiable(_templates);
 
   void filterTransactionsByNameCustomer({String name = ''}) {
     _filteredTransactions.clear();

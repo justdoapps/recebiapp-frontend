@@ -16,7 +16,7 @@ class CustomerRepositoryImpl with HttpRequestMixin implements CustomerRepository
   final _log = Logger('CustomerRepositoryImpl');
 
   List<CustomerModel> _cachedCustomers = [];
-  List<CustomerModel> get cachedCustomers => List.unmodifiable(_cachedCustomers);
+  List<CustomerModel> get cachedCustomers => List.from(_cachedCustomers);
   bool _hasCache = false;
 
   @override

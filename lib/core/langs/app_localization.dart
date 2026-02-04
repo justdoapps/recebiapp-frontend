@@ -108,6 +108,7 @@ class AppLocalization {
   String get friday => getWord(KeysLang.friday);
   String get saturday => getWord(KeysLang.saturday);
   String get sunday => getWord(KeysLang.sunday);
+  String get recurrence => getWord(KeysLang.recurrence);
 
   // String nameTrips(String name) => _get('nameTrips').replaceAll('{name}', name);
 }

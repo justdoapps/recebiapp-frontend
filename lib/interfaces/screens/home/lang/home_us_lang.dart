@@ -35,5 +35,7 @@ abstract class HomeUsLang {
     HomeKeysLang.recurrenceCreated: 'Recurrence created',
     HomeKeysLang.errorCreateRecurrence: 'Error creating recurrence',
     HomeKeysLang.startDate: 'Start date',
+    HomeKeysLang.errorListCustomers: 'Error getting customers',
+    HomeKeysLang.errorListTemplates: 'Error getting templates of recurrences',
   };
 }

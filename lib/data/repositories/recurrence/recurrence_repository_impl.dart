@@ -12,7 +12,7 @@ class RecurrenceRepositoryImpl with HttpRequestMixin implements RecurrenceReposi
   RecurrenceRepositoryImpl({required HttpService http}) : _http = http;
 
   List<RecurrenceModel> _listCached = [];
-  List<RecurrenceModel> get listCached => List.unmodifiable(_listCached);
+  List<RecurrenceModel> get listCached => List.from(_listCached);
   bool _hasCache = false;
 
   @override

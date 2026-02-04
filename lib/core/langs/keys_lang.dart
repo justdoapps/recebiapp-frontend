@@ -59,4 +59,5 @@ class KeysLang {
   static const friday = 'friday';
   static const saturday = 'saturday';
   static const sunday = 'sunday';
+  static const recurrence = 'recurrence';
 }

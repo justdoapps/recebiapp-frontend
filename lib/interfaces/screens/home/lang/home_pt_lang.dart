@@ -35,5 +35,7 @@ abstract class HomePtLang {
     HomeKeysLang.recurrenceCreated: 'Recorrência criada',
     HomeKeysLang.startDate: 'Data inicial',
     HomeKeysLang.errorCreateRecurrence: 'Erro ao criar recorrência',
+    HomeKeysLang.errorListCustomers: 'Erro ao buscar clientes',
+    HomeKeysLang.errorListTemplates: 'Erro ao buscar modelos de recorrência',
   };
 }

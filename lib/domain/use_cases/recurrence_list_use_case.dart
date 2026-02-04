@@ -8,7 +8,19 @@ class RecurrenceListUseCase {
   RecurrenceListUseCase({required RecurrenceRepository repository}) : _repository = repository;
 
   Future<Result<List<RecurrenceModel>>> list() async {
-    return await _repository.list();
+    final result = await _repository.list();
+    return result.fold(
+      (err) => Result.error(err),
+      (value) {
+        value.sort((a, b) {
+          if (a.isActive != b.isActive) {
+            return a.isActive ? -1 : 1;
+          }
+          return a.description.toLowerCase().compareTo(b.description.toLowerCase());
+        });
+        return Result.ok(List.unmodifiable(value));
+      },
+    );
   }
 
   Future<Result<List<RecurrenceModel>>> listFromCache() async {
@@ -21,8 +33,8 @@ class RecurrenceListUseCase {
       (err) => Result.error(err),
       (value) {
         final list = value.where((e) => e.isActive).toList();
-        list.sort((a, b) => a.description.compareTo(b.description));
-        return Result.ok(list);
+        list.sort((a, b) => a.description.toLowerCase().compareTo(b.description.toLowerCase()));
+        return Result.ok(List.unmodifiable(list));
       },
     );
   }
