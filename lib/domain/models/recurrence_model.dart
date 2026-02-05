@@ -16,7 +16,7 @@ class RecurrenceModel {
   final int? dayOfMonth;
   final int? dayOfWeek;
   final CustomerModel customer;
-  final TemplateModel template;
+  final TemplateModel? template;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -52,106 +52,9 @@ class RecurrenceModel {
       dayOfMonth: json['dayOfMonth'],
       dayOfWeek: json['dayOfWeek'],
       customer: CustomerModel.fromMap(json['customer']),
-      template: TemplateModel.fromMap(json['template']),
+      template: json['template'] != null ? TemplateModel.fromMap(json['template']) : null,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'description': description,
-      'amount': amount,
-      'isActive': isActive,
-      'startDate': startDate.toIso8601String(),
-      'nextRunDate': nextRunDate.toIso8601String(),
-      'type': type.name,
-      'frequency': frequency.name,
-      'intervalDays': intervalDays,
-      'dayOfMonth': dayOfMonth,
-      'dayOfWeek': dayOfWeek,
-      'customer': customer.toMap(),
-      'template': template.toMap(),
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-    };
-  }
-
-  RecurrenceModel copyWith({
-    String? id,
-    String? description,
-    int? amount,
-    bool? isActive,
-    DateTime? startDate,
-    DateTime? nextRunDate,
-    TransactionType? type,
-    Frequency? frequency,
-    int? intervalDays,
-    int? dayOfMonth,
-    int? dayOfWeek,
-    CustomerModel? customer,
-    TemplateModel? template,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) {
-    return RecurrenceModel(
-      id: id ?? this.id,
-      description: description ?? this.description,
-      amount: amount ?? this.amount,
-      isActive: isActive ?? this.isActive,
-      startDate: startDate ?? this.startDate,
-      nextRunDate: nextRunDate ?? this.nextRunDate,
-      type: type ?? this.type,
-      frequency: frequency ?? this.frequency,
-      intervalDays: intervalDays ?? this.intervalDays,
-      dayOfMonth: dayOfMonth ?? this.dayOfMonth,
-      dayOfWeek: dayOfWeek ?? this.dayOfWeek,
-      customer: customer ?? this.customer,
-      template: template ?? this.template,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is RecurrenceModel &&
-        other.id == id &&
-        other.description == description &&
-        other.amount == amount &&
-        other.isActive == isActive &&
-        other.startDate == startDate &&
-        other.nextRunDate == nextRunDate &&
-        other.type == type &&
-        other.frequency == frequency &&
-        other.intervalDays == intervalDays &&
-        other.dayOfMonth == dayOfMonth &&
-        other.dayOfWeek == dayOfWeek &&
-        other.customer == customer &&
-        other.template == template &&
-        other.createdAt == createdAt &&
-        other.updatedAt == updatedAt;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        description.hashCode ^
-        amount.hashCode ^
-        isActive.hashCode ^
-        startDate.hashCode ^
-        nextRunDate.hashCode ^
-        type.hashCode ^
-        frequency.hashCode ^
-        intervalDays.hashCode ^
-        dayOfMonth.hashCode ^
-        dayOfWeek.hashCode ^
-        customer.hashCode ^
-        template.hashCode ^
-        createdAt.hashCode ^
-        updatedAt.hashCode;
   }
 }

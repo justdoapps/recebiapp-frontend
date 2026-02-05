@@ -11,7 +11,7 @@ import '../../../domain/enum/transaction_enum.dart';
 import '../../../domain/models/transaction_model.dart';
 import '../../core/adaptive_date_picker.dart';
 import '../../core/drawer/app_drawer.dart';
-import 'components/upsert_recurrence_component.dart';
+import 'components/create_recurrence_component.dart';
 import 'components/upsert_transaction_component.dart';
 import 'home_view_model.dart';
 import 'lang/home_localization_ext.dart';
@@ -170,7 +170,7 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                             padding: .only(bottom: context.viewInsetsBottom),
                             child: ChangeNotifierProvider.value(
                               value: _vm,
-                              child: const UpsertRecurrenceComponent(),
+                              child: const CreateRecurrenceComponent(),
                             ),
                           ),
                         );

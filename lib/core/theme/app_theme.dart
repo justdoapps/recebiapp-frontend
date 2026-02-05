@@ -8,12 +8,18 @@ abstract final class AppTheme {
     colorScheme: AppColors.lightColorScheme,
     scaffoldBackgroundColor: AppColors.lightColorScheme.surface,
     extensions: [AppTexts.lightTypography],
+    cardTheme: _cardTheme.copyWith(
+      color: AppColors.lightColorScheme.surfaceContainer,
+    ),
   );
 
   static ThemeData darkTheme = defaultTheme.copyWith(
     colorScheme: AppColors.darkColorScheme,
     scaffoldBackgroundColor: AppColors.darkColorScheme.surface,
     extensions: [AppTexts.darkTypography],
+    cardTheme: _cardTheme.copyWith(
+      color: AppColors.darkColorScheme.surfaceContainer,
+    ),
   );
 
   static ThemeData defaultTheme = ThemeData(
@@ -22,6 +28,7 @@ abstract final class AppTheme {
     inputDecorationTheme: _inputDecorationTheme,
     appBarTheme: _appBarTheme,
     navigationDrawerTheme: _navigationDrawerTheme,
+    cardTheme: _cardTheme,
   );
 
   static const _inputDecorationTheme = InputDecorationTheme(
@@ -42,5 +49,11 @@ abstract final class AppTheme {
 
   static const _navigationDrawerTheme = NavigationDrawerThemeData(
     tileHeight: 45,
+  );
+
+  static const _cardTheme = CardThemeData(
+    shape: RoundedRectangleBorder(
+      borderRadius: .all(.circular(18)),
+    ),
   );
 }

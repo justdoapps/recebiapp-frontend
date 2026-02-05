@@ -46,6 +46,12 @@ class RecurrenceRepositoryImpl with HttpRequestMixin implements RecurrenceReposi
       (value) {
         if (value.statusCode != 200) return Result.error(StatusCodeFailure());
         _listCached = (value.data as List).map((e) => RecurrenceModel.fromMap(e)).toList();
+        _listCached.sort((a, b) {
+          if (a.isActive != b.isActive) {
+            return a.isActive ? -1 : 1;
+          }
+          return a.description.compareTo(b.description);
+        });
         _hasCache = true;
         return Result.ok(listCached);
       },

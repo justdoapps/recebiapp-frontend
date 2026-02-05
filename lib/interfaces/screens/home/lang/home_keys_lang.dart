@@ -28,9 +28,19 @@ class HomeKeysLang {
   static const String invalidDayOfMonth = 'invalidDayOfMonth';
   static const String invalidIntervalDays = 'invalidIntervalDays';
   static const String templateRecurrence = 'templateRecurrence';
-  static const String recurrenceCreated = 'recurrenceCreated';
-  static const String errorCreateRecurrence = 'errorCreateRecurrence';
   static const String startDate = 'startDate';
   static const String errorListCustomers = 'errorListCustomers';
   static const String errorListTemplates = 'errorListTemplates';
+  static const String noNotesProvided = 'noNotesProvided';
+  static const String noPaymentInfoProvided = 'noPaymentInfoProvided';
+  static const String notPaidYet = 'notPaidYet';
+  static const String notes = 'notes';
+  static const String dates = 'dates';
+  static const String basicInfo = 'basicInfo';
+  static const String attachments = 'attachments';
+  static const String message = 'message';
+  static const String couldNotOpenWhatsApp = 'couldNotOpenWhatsApp';
+  static const String customerDetails = 'customerDetails';
+  static const String transactionDetails = 'transactionDetails';
+  static const String toManyFiles = 'toManyFiles';
 }

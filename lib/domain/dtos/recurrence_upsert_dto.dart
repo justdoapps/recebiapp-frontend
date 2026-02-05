@@ -54,6 +54,7 @@ class RecurrenceUpdateDto {
   final int? dayOfWeek;
   final String? customerId;
   final String? templateId;
+  final bool? isActive;
 
   RecurrenceUpdateDto({
     required this.id,
@@ -67,6 +68,7 @@ class RecurrenceUpdateDto {
     this.dayOfWeek,
     this.customerId,
     this.templateId,
+    this.isActive,
   });
 
   Map<String, dynamic> toMap() {
@@ -82,6 +84,7 @@ class RecurrenceUpdateDto {
       if (dayOfWeek != null) 'dayOfWeek': dayOfWeek,
       if (customerId != null) 'customerId': customerId,
       if (templateId != null) 'templateId': templateId,
+      if (isActive != null) 'isActive': isActive,
     };
   }
 }

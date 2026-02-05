@@ -108,6 +108,8 @@ final appRouter = GoRouter(
         return ChangeNotifierProvider(
           create: (_) => RecurrenceViewModel(
             repository: getIt(),
+            listCustomersUseCase: getIt(),
+            templateListUseCase: getIt(),
           ),
           child: const RecurrenceView(),
         );

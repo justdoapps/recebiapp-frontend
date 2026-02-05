@@ -33,9 +33,19 @@ extension HomeLocalization on AppLocalization {
   String get newRecurrence => getWord(HomeKeysLang.newRecurrence);
   String get newTransaction => getWord(HomeKeysLang.newTransaction);
   String get templateRecurrence => getWord(HomeKeysLang.templateRecurrence);
-  String get recurrenceCreated => getWord(HomeKeysLang.recurrenceCreated);
-  String get errorCreateRecurrence => getWord(HomeKeysLang.errorCreateRecurrence);
   String get startDate => getWord(HomeKeysLang.startDate);
   String get errorListCustomers => getWord(HomeKeysLang.errorListCustomers);
   String get errorListTemplates => getWord(HomeKeysLang.errorListTemplates);
+  String get noNotesProvided => getWord(HomeKeysLang.noNotesProvided);
+  String get noPaymentInfoProvided => getWord(HomeKeysLang.noPaymentInfoProvided);
+  String get notPaidYet => getWord(HomeKeysLang.notPaidYet);
+  String get notes => getWord(HomeKeysLang.notes);
+  String get dates => getWord(HomeKeysLang.dates);
+  String get basicInfo => getWord(HomeKeysLang.basicInfo);
+  String get attachments => getWord(HomeKeysLang.attachments);
+  String get message => getWord(HomeKeysLang.message);
+  String get couldNotOpenWhatsApp => getWord(HomeKeysLang.couldNotOpenWhatsApp);
+  String get customerDetails => getWord(HomeKeysLang.customerDetails);
+  String get transactionDetails => getWord(HomeKeysLang.transactionDetails);
+  String get toManyFiles => getWord(HomeKeysLang.toManyFiles);
 }

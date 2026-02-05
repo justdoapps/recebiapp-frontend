@@ -9,6 +9,8 @@ import '../../interfaces/screens/home/lang/home_pt_lang.dart';
 import '../../interfaces/screens/home/lang/home_us_lang.dart';
 import '../../interfaces/screens/monetization/lang/monetization_pt_lang.dart';
 import '../../interfaces/screens/monetization/lang/monetization_us_lang.dart';
+import '../../interfaces/screens/recurrence/lang/recurrence_pt_lang.dart';
+import '../../interfaces/screens/recurrence/lang/recurrence_us_lang.dart';
 import '../../interfaces/screens/recurrence_template/lang/template_pt_lang.dart';
 import '../../interfaces/screens/recurrence_template/lang/template_us_lang.dart';
 import 'keys_lang.dart';
@@ -29,6 +31,7 @@ class AppLocalization {
           ...CustomerPtLang.words,
           ...HomePtLang.words,
           ...TemplatePtLang.words,
+          ...RecurrencePtLang.words,
         };
         break;
       case 'en':
@@ -40,6 +43,7 @@ class AppLocalization {
           ...CustomerUsLang.words,
           ...HomeUsLang.words,
           ...TemplateUsLang.words,
+          ...RecurrenceUsLang.words,
         };
     }
   }
@@ -109,6 +113,8 @@ class AppLocalization {
   String get saturday => getWord(KeysLang.saturday);
   String get sunday => getWord(KeysLang.sunday);
   String get recurrence => getWord(KeysLang.recurrence);
+
+  void operator [](String other) {}
 
   // String nameTrips(String name) => _get('nameTrips').replaceAll('{name}', name);
 }

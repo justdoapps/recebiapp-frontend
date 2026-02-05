@@ -386,6 +386,12 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                     ),
                     FilledButton.icon(
                       onPressed: () async {
+                        if (files.length >= 2) {
+                          context.showInformationDialog(
+                            content: Text(context.words.toManyFiles),
+                          );
+                          return;
+                        }
                         final FilePickerResult? result = await FilePicker.platform.pickFiles(
                           allowMultiple: true,
                           type: FileType.custom,
@@ -405,28 +411,27 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                 Wrap(
                   children: files
                       .map(
-                        (x) => SizedBox(
-                          width: 120,
-                          child: InkWell(
-                            onTap: () {
-                              context.showConfirmationDialog(
-                                content: Text(context.words.confirmRemoveFile(x.name)),
-                                onConfirm: () {
-                                  setState(() {
-                                    files.remove(x);
-                                  });
-                                },
-                              );
-                            },
-                            child: Card(
-                              color: context.theme.colorScheme.primaryContainer,
-                              child: ListTile(
-                                title: FittedBox(
-                                  fit: .scaleDown,
-                                  child: Text(x.name, style: context.textTheme.verySmallBold),
-                                ),
-                                subtitle: Text(x.size.bytesToMbString(), style: context.textTheme.verySmall),
-                              ),
+                        (x) => InkWell(
+                          onTap: () {
+                            context.showConfirmationDialog(
+                              content: Text(context.words.confirmRemoveFile(x.name)),
+                              onConfirm: () {
+                                setState(() {
+                                  files.remove(x);
+                                });
+                              },
+                            );
+                          },
+                          child: ListTile(
+                            title: Text(x.name, style: context.textTheme.verySmallBold, overflow: .ellipsis),
+                            subtitle: Text(x.size.bytesToMbString(), style: context.textTheme.verySmall),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                setState(() {
+                                  files.remove(x);
+                                });
+                              },
                             ),
                           ),
                         ),

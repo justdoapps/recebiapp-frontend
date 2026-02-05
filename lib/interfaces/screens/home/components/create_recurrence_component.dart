@@ -19,18 +19,19 @@ import '../../../core/app_gradient_button.dart';
 import '../../../core/app_input_stack.dart';
 import '../../../core/loader_local.dart';
 import '../../customer/lang/customer_localization_ext.dart';
+import '../../recurrence/lang/recurrence_localization_ext.dart';
 import '../../recurrence_template/lang/template_localization_ext.dart';
 import '../home_view_model.dart';
 import '../lang/home_localization_ext.dart';
 
-class UpsertRecurrenceComponent extends StatefulWidget {
-  const UpsertRecurrenceComponent({super.key});
+class CreateRecurrenceComponent extends StatefulWidget {
+  const CreateRecurrenceComponent({super.key});
 
   @override
-  State<UpsertRecurrenceComponent> createState() => _UpsertRecurrenceComponentState();
+  State<CreateRecurrenceComponent> createState() => _CreateRecurrenceComponentState();
 }
 
-class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> with LoadingMixin {
+class _CreateRecurrenceComponentState extends State<CreateRecurrenceComponent> with LoadingMixin {
   late final HomeViewModel _vm;
   final _formKey = GlobalKey<FormState>();
   final _descriptionEC = TextEditingController();
@@ -219,7 +220,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                           if (_frequency == Frequency.WEEKLY) {
                             _dayOfWeek = value.dayOfWeek != null ? FrequencyWeekly.fromInt(value.dayOfWeek!) : null;
                           }
-                          _descriptionEC.text = value.name;
+                          // _descriptionEC.text = value.name;
                           _amountEC.text = CurrencyTextInputFormatter.simpleCurrency(locale: context.locale)
                               .formatString(
                                 value.amount.centsToString(),
@@ -248,7 +249,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                       Expanded(
                         child: RadioListTile<TransactionType>.adaptive(
                           value: TransactionType.INCOME,
-                          title: Text(context.words.income),
+                          title: Text(context.words.income, style: context.textTheme.small),
                           dense: true,
                           selected: _type == TransactionType.INCOME,
                           enabled: _template == null,
@@ -257,7 +258,7 @@ class _UpsertRecurrenceComponentState extends State<UpsertRecurrenceComponent> w
                       Expanded(
                         child: RadioListTile<TransactionType>.adaptive(
                           value: TransactionType.EXPENSE,
-                          title: Text(context.words.expense),
+                          title: Text(context.words.expense, style: context.textTheme.small),
                           dense: true,
                           selected: _type == TransactionType.EXPENSE,
                           enabled: _template == null,
