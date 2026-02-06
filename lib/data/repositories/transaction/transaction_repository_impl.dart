@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:file_picker/src/platform_file.dart';
 import 'package:logging/logging.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../core/mixins/http_request_mixin.dart';
 import '../../../core/utils/failure.dart';
@@ -22,8 +27,21 @@ class TransactionRepositoryImpl with HttpRequestMixin implements TransactionRepo
   bool _hasHomeCache = false;
 
   @override
-  Future<Result<void>> create(TransactionCreateDto transaction) async {
+  Future<Result<String>> create(TransactionCreateDto transaction) async {
     final result = await safeRequest(request: () => _http.post('/transaction', data: transaction.toBodyRequest()));
+
+    return result.fold(
+      (error) => Result.error(error),
+      (value) => value.statusCode == 201 ? Result.ok(value.data['id']) : Result.error(StatusCodeFailure()),
+    );
+  }
+
+  @override
+  Future<Result<void>> uploadFiles({required PlatformFile file, required String id}) async {
+    final formData = FormData.fromMap({
+      'file': MultipartFile.fromFileSync(file.path!, filename: file.name),
+    });
+    final result = await safeRequest(request: () => _http.post('/transaction/$id/attachment', data: formData));
 
     return result.fold(
       (error) => Result.error(error),
@@ -114,6 +132,36 @@ class TransactionRepositoryImpl with HttpRequestMixin implements TransactionRepo
     return result.fold(
       (error) => Result.error(error),
       (value) => value.statusCode == 200 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
+    );
+  }
+
+  @override
+  Future<Result<void>> deleteAttachment({required String idAttachment, required String idTransaction}) async {
+    final result = await safeRequest(
+      request: () => _http.delete('/transaction/$idTransaction/attachment/$idAttachment'),
+    );
+
+    return result.fold(
+      (error) => Result.error(error),
+      (value) => value.statusCode == 204 ? const Result.ok(null) : Result.error(StatusCodeFailure()),
+    );
+  }
+
+  @override
+  Future<Result<File>> downloadAttachment({
+    required String idAttachment,
+    required String idTransaction,
+    required String fileName,
+  }) async {
+    final appDir = await getTemporaryDirectory();
+    final String savePath = '${appDir.path}/$fileName';
+    final result = await safeRequest(
+      request: () => _http.download('/transaction/$idTransaction/attachment/$idAttachment', savePath),
+    );
+
+    return result.fold(
+      (error) => Result.error(error),
+      (value) => value.statusCode == 200 ? Result.ok(File(savePath)) : Result.error(StatusCodeFailure()),
     );
   }
 }

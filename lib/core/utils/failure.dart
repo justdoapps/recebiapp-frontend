@@ -19,3 +19,7 @@ class GenericFailure extends Failure {
 class AuthFailure extends Failure {
   AuthFailure({super.message});
 }
+
+class AttachmentFailure extends Failure {
+  AttachmentFailure({super.message});
+}

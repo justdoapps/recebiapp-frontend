@@ -1,6 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/utils/command.dart';
+import '../../../core/utils/failure.dart';
 import '../../../core/utils/result.dart';
 import '../../../data/repositories/recurrence/recurrence_repository.dart';
 import '../../../data/repositories/transaction/transaction_repository.dart';
@@ -21,6 +24,15 @@ typedef BatchUpdateStatusArgs = ({
   DateTime? paymentDate,
 });
 
+typedef TransactionCreateArgs = ({
+  TransactionCreateDto transaction,
+  PlatformFile? file,
+});
+typedef TransactionUpdateArgs = ({
+  TransactionUpdateDto transaction,
+  PlatformFile? file,
+});
+
 class HomeViewModel extends ChangeNotifier {
   final TransactionRepository _repository;
   final ListCustomersUseCase _listCustomersUseCase;
@@ -38,8 +50,8 @@ class HomeViewModel extends ChangeNotifier {
        _recurrenceRepository = recurrenceRepository {
     listTransactions = Command0<void>(_listTransactions);
     listCustomers = Command0<void>(_listCustomers);
-    createTransaction = Command1<void, TransactionCreateDto>(_createTransaction);
-    updateTransaction = Command1<void, TransactionUpdateDto>(_updateTransaction);
+    createTransaction = Command1<void, TransactionCreateArgs>(_createTransaction);
+    updateTransaction = Command1<void, TransactionUpdateArgs>(_updateTransaction);
     deleteTransaction = Command1<void, TransactionModel>(_deleteTransaction);
     updateStatus = Command1<void, UpdateStatusArgs>(_updateStatus);
     batchUpdateStatus = Command1<void, BatchUpdateStatusArgs>(_batchUpdateStatus);
@@ -98,8 +110,8 @@ class HomeViewModel extends ChangeNotifier {
   late Command0<void> listCustomers;
   late Command0<void> listTemplates;
   late Command1<void, RecurrenceCreateDto> createRecurrence;
-  late Command1<void, TransactionCreateDto> createTransaction;
-  late Command1<void, TransactionUpdateDto> updateTransaction;
+  late Command1<void, TransactionCreateArgs> createTransaction;
+  late Command1<void, TransactionUpdateArgs> updateTransaction;
   late Command1<void, TransactionModel> deleteTransaction;
   late Command1<void, UpdateStatusArgs> updateStatus;
   late Command1<void, BatchUpdateStatusArgs> batchUpdateStatus;
@@ -141,19 +153,35 @@ class HomeViewModel extends ChangeNotifier {
         },
       );
 
-  Future<Result<void>> _createTransaction(TransactionCreateDto transaction) async =>
-      (await _repository.create(transaction)).fold(
+  Future<Result<void>> _createTransaction(TransactionCreateArgs args) async =>
+      (await _repository.create(args.transaction)).fold(
         (error) => Result.error(error),
-        (value) {
+        (newId) async {
+          if (args.file != null) {
+            final attachmentResult = await _repository.uploadFiles(id: newId, file: args.file!);
+            listTransactions.execute();
+            return attachmentResult.fold(
+              (error) => Result.error(AttachmentFailure()),
+              (value) => const Result.ok(null),
+            );
+          }
           listTransactions.execute();
           return const Result.ok(null);
         },
       );
 
-  Future<Result<void>> _updateTransaction(TransactionUpdateDto transaction) async =>
-      (await _repository.update(transaction)).fold(
+  Future<Result<void>> _updateTransaction(TransactionUpdateArgs args) async =>
+      (await _repository.update(args.transaction)).fold(
         (error) => Result.error(error),
-        (value) {
+        (value) async {
+          if (args.file != null) {
+            final attachmentResult = await _repository.uploadFiles(id: args.transaction.id, file: args.file!);
+            listTransactions.execute();
+            return attachmentResult.fold(
+              (error) => Result.error(AttachmentFailure()),
+              (value) => const Result.ok(null),
+            );
+          }
           listTransactions.execute();
           return const Result.ok(null);
         },
@@ -179,6 +207,31 @@ class HomeViewModel extends ChangeNotifier {
         (error) => Result.error(error),
         (value) {
           listTransactions.execute();
+          return const Result.ok(null);
+        },
+      );
+
+  Future<Result<void>> _downloadAttachment(TransactionModel transaction) async =>
+      (await _repository.downloadAttachment(
+        idAttachment: transaction.attachmentId!,
+        idTransaction: transaction.id,
+        fileName: transaction.attachmentName!,
+      )).fold(
+        (error) => Result.error(error),
+        (file) {
+          final params = ShareParams(text: transaction.description, files: [XFile(file.path)]);
+          SharePlus.instance.share(params);
+          return const Result.ok(null);
+        },
+      );
+
+  Future<Result<void>> _deleteAttachment(TransactionModel transaction) async =>
+      (await _repository.deleteAttachment(
+        idAttachment: transaction.attachmentId!,
+        idTransaction: transaction.id,
+      )).fold(
+        (error) => Result.error(error),
+        (value) {
           return const Result.ok(null);
         },
       );

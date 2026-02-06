@@ -48,4 +48,10 @@ extension HomeLocalization on AppLocalization {
   String get customerDetails => getWord(HomeKeysLang.customerDetails);
   String get transactionDetails => getWord(HomeKeysLang.transactionDetails);
   String get toManyFiles => getWord(HomeKeysLang.toManyFiles);
+  String get fileTooLarge => getWord(HomeKeysLang.fileTooLarge);
+  String get errorAttachmentFile => getWord(HomeKeysLang.errorAttachmentFile);
+  String get errorAttachmentFileUpdate => getWord(HomeKeysLang.errorAttachmentFileUpdate);
+  String get noName => getWord(HomeKeysLang.noName);
+  String get noSize => getWord(HomeKeysLang.noSize);
+  String get noAttachment => getWord(HomeKeysLang.noAttachment);
 }

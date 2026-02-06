@@ -47,5 +47,11 @@ abstract class HomeUsLang {
     HomeKeysLang.customerDetails: 'Customer details',
     HomeKeysLang.transactionDetails: 'Transaction details',
     HomeKeysLang.toManyFiles: 'Too many files',
+    HomeKeysLang.fileTooLarge: 'File too large',
+    HomeKeysLang.errorAttachmentFile: 'Error attaching file, but the transaction was created!',
+    HomeKeysLang.errorAttachmentFileUpdate: 'Error attaching file, but the transaction was updated!',
+    HomeKeysLang.noName: 'No name',
+    HomeKeysLang.noSize: 'No size',
+    HomeKeysLang.noAttachment: 'No attachment',
   };
 }

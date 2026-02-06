@@ -164,6 +164,7 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                   mainAxisAlignment: .spaceAround,
                   children: [
                     FloatingActionButton.extended(
+                      heroTag: 'new_recurrence',
                       onPressed: () {
                         context.showBottomSheet(
                           child: Padding(
@@ -179,6 +180,7 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                       label: Text(context.words.newRecurrence, style: context.textTheme.verySmall),
                     ),
                     FloatingActionButton.extended(
+                      heroTag: 'new_transaction',
                       onPressed: () {
                         context.showBottomSheet(
                           child: Padding(

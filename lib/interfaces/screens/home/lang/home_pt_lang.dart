@@ -47,5 +47,11 @@ abstract class HomePtLang {
     HomeKeysLang.customerDetails: 'Detalhes do cliente',
     HomeKeysLang.transactionDetails: 'Detalhes da transação',
     HomeKeysLang.toManyFiles: 'Muitos arquivos',
+    HomeKeysLang.fileTooLarge: 'Arquivo muito grande',
+    HomeKeysLang.errorAttachmentFile: 'Erro ao anexar arquivo, mas a transação foi criada!',
+    HomeKeysLang.errorAttachmentFileUpdate: 'Erro ao anexar arquivo, mas a transação foi atualizada!',
+    HomeKeysLang.noName: 'Sem nome',
+    HomeKeysLang.noSize: 'Sem tamanho',
+    HomeKeysLang.noAttachment: 'Sem anexo',
   };
 }

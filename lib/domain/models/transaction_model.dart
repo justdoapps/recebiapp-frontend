@@ -16,7 +16,9 @@ class TransactionModel {
   final String? paymentInfo;
   final CustomerModel customer;
   final String? recurrenceId; //TODO mudar qnd tiver o objeto recurrence
-  //todo adicionar objeto anexos attachment
+  final String? attachmentId;
+  final String? attachmentName;
+  final int? attachmentSize;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -35,6 +37,9 @@ class TransactionModel {
     this.recurrenceId,
     required this.createdAt,
     required this.updatedAt,
+    this.attachmentId,
+    this.attachmentName,
+    this.attachmentSize,
   });
 
   factory TransactionModel.fromMap(Map<String, dynamic> json) {
@@ -53,6 +58,21 @@ class TransactionModel {
       recurrenceId: json['recurrenceId'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
+      attachmentId: json['attachments'] != null
+          ? (json['attachments'] as List).isNotEmpty
+                ? (json['attachments'] as List).first['id']
+                : null
+          : null,
+      attachmentName: json['attachments'] != null
+          ? (json['attachments'] as List).isNotEmpty
+                ? (json['attachments'] as List).first['filename']
+                : null
+          : null,
+      attachmentSize: json['attachments'] != null
+          ? (json['attachments'] as List).isNotEmpty
+                ? (json['attachments'] as List).first['size']
+                : null
+          : null,
     );
   }
 

@@ -125,39 +125,30 @@ class TransactionDetailsView extends StatelessWidget {
               _buildSectionHeader(context, context.words.attachments),
               Card(
                 color: context.colors.surfaceContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Wrap(
-                    children:
-                        [] //TODO anexos
-                            .map(
-                              (x) => SizedBox(
-                                width: 120,
-                                child: InkWell(
-                                  onTap: () {
-                                    context.showConfirmationDialog(
-                                      content: Text('context.words.downloadFile(x.name)'),
-                                      onConfirm: () {
-                                        //TODO download file
-                                      },
-                                    );
-                                  },
-                                  child: Card(
-                                    color: context.theme.colorScheme.primaryContainer,
-                                    child: ListTile(
-                                      title: FittedBox(
-                                        fit: .scaleDown,
-                                        child: Text(x.name, style: context.textTheme.verySmallBold),
-                                      ),
-                                      subtitle: Text(x.size.bytesToMbString(), style: context.textTheme.verySmall),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                  ),
-                ),
+                child: transaction.attachmentId != null
+                    ? ListTile(
+                        leading: IconButton.filledTonal(
+                          onPressed: () {
+                            //TODO delete
+                          },
+                          icon: const Icon(Icons.clear),
+                        ),
+                        title: Text(
+                          transaction.attachmentName ?? context.words.noName,
+                          style: context.textTheme.verySmallBold,
+                        ),
+                        subtitle: Text(
+                          transaction.attachmentSize?.bytesToMbString() ?? context.words.noSize,
+                          style: context.textTheme.verySmallBold,
+                        ),
+                        trailing: IconButton.filledTonal(
+                          onPressed: () {
+                            //TODO downlaod file
+                          },
+                          icon: const Icon(Icons.download),
+                        ),
+                      )
+                    : ListTile(title: Text(context.words.noAttachment, style: context.textTheme.smallBold)),
               ),
 
               const SizedBox(height: 20),

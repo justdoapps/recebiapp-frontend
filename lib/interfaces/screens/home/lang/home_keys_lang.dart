@@ -43,4 +43,10 @@ class HomeKeysLang {
   static const String customerDetails = 'customerDetails';
   static const String transactionDetails = 'transactionDetails';
   static const String toManyFiles = 'toManyFiles';
+  static const String fileTooLarge = 'fileTooLarge';
+  static const String errorAttachmentFile = 'errorAttachmentFile';
+  static const String errorAttachmentFileUpdate = 'errorAttachmentFileUpdate';
+  static const String noName = 'noName';
+  static const String noSize = 'noSize';
+  static const String noAttachment = 'noAttachment';
 }

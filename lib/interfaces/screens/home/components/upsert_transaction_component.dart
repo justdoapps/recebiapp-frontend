@@ -9,6 +9,7 @@ import '../../../../core/extensions/dialog_extension.dart';
 import '../../../../core/extensions/formatters_extension.dart';
 import '../../../../core/extensions/message_extension.dart';
 import '../../../../core/mixins/loading_mixin.dart';
+import '../../../../core/utils/failure.dart';
 import '../../../../domain/dtos/transaction_upsert_dto.dart';
 import '../../../../domain/enum/transaction_enum.dart';
 import '../../../../domain/models/customer_model.dart';
@@ -45,7 +46,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
   DateTime _dueDate = DateTime.now();
   TransactionType _type = TransactionType.INCOME;
   TransactionStatus _status = TransactionStatus.PENDING;
-  final files = <PlatformFile>[];
+  PlatformFile? _file;
 
   @override
   void initState() {
@@ -61,6 +62,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
       _type = widget.transaction!.type;
       _customer = widget.transaction!.customer;
       _status = widget.transaction!.status;
+      _file = PlatformFile(name: widget.transaction!.attachmentName!, size: widget.transaction!.attachmentSize!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _amountEC.text = CurrencyTextInputFormatter.simpleCurrency(locale: context.locale).formatString(
@@ -101,7 +103,11 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
   void _onCreateListener() {
     _vm.createTransaction.running ? showGlobalLoader() : hideGlobalLoader();
     if (_vm.createTransaction.error) {
-      context.showMessage(title: context.words.errorCreateTransaction, type: MessageType.error, position: .top);
+      if (_vm.createTransaction.errorValue is AttachmentFailure) {
+        context.showMessage(title: context.words.errorAttachmentFile, type: MessageType.error, position: .top);
+      } else {
+        context.showMessage(title: context.words.errorCreateTransaction, type: MessageType.error, position: .top);
+      }
       _vm.createTransaction.clearResult();
     } else if (_vm.createTransaction.completed) {
       context.showMessage(title: context.words.transactionCreated);
@@ -113,10 +119,11 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
   void _onUpdateListener() {
     _vm.updateTransaction.running ? showGlobalLoader() : hideGlobalLoader();
     if (_vm.updateTransaction.error) {
-      context.showMessage(
-        title: context.words.errorUpdateTransaction,
-        type: MessageType.error,
-      );
+      if (_vm.updateTransaction.errorValue is AttachmentFailure) {
+        context.showMessage(title: context.words.errorAttachmentFileUpdate, type: MessageType.error, position: .top);
+      } else {
+        context.showMessage(title: context.words.errorUpdateTransaction, type: MessageType.error, position: .top);
+      }
       _vm.updateTransaction.clearResult();
     } else if (_vm.updateTransaction.completed) {
       context.showMessage(title: context.words.transactionUpdated);
@@ -126,11 +133,15 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
   }
 
   void _save() {
+    if ((_file?.size ?? 0) > 5 * 1024 * 1024) {
+      context.showMessage(title: context.words.fileTooLarge, type: MessageType.error);
+      return;
+    }
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     if (widget.transaction == null) {
-      _vm.createTransaction.execute(
-        TransactionCreateDto(
+      _vm.createTransaction.execute((
+        transaction: TransactionCreateDto(
           description: _descriptionEC.text,
           amount: _amountEC.text.toCents(),
           internalNote: _internalNoteEC.text.isEmpty ? null : _internalNoteEC.text,
@@ -141,10 +152,11 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
           type: _type,
           status: _status,
         ),
-      );
+        file: _file,
+      ));
     } else {
-      _vm.updateTransaction.execute(
-        TransactionUpdateDto(
+      _vm.updateTransaction.execute((
+        transaction: TransactionUpdateDto(
           id: widget.transaction!.id,
           description: _descriptionEC.text != widget.transaction!.description ? _descriptionEC.text : null,
           amount: _amountEC.text.toCents() != widget.transaction!.amount ? _amountEC.text.toCents() : null,
@@ -156,7 +168,8 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
           type: _type != widget.transaction!.type ? _type : null,
           status: _status != widget.transaction!.status ? _status : null,
         ),
-      );
+        file: _file,
+      ));
     }
   }
 
@@ -368,76 +381,52 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                 ),
                 const Divider(),
                 Row(
-                  mainAxisAlignment: .spaceEvenly,
                   children: [
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        context.showConfirmationDialog(
-                          content: Text(context.words.confirmClearFiles),
-                          onConfirm: () {
-                            setState(() {
-                              files.clear();
-                            });
-                          },
-                        );
-                      },
-                      icon: const Icon(Icons.clear),
-                      label: Text(context.words.clearAll),
-                    ),
-                    FilledButton.icon(
-                      onPressed: () async {
-                        if (files.length >= 2) {
-                          context.showInformationDialog(
-                            content: Text(context.words.toManyFiles),
-                          );
-                          return;
-                        }
-                        final FilePickerResult? result = await FilePicker.platform.pickFiles(
-                          allowMultiple: true,
-                          type: FileType.custom,
-                          allowedExtensions: ['jpg', 'pdf', 'doc'],
-                        );
-                        if (result != null) {
-                          setState(() {
-                            files.addAll(result.files);
-                          });
-                        }
-                      },
-                      icon: const Icon(Icons.attach_file),
-                      label: Text(context.words.addFiles),
-                    ),
-                  ],
-                ),
-                Wrap(
-                  children: files
-                      .map(
-                        (x) => InkWell(
-                          onTap: () {
-                            context.showConfirmationDialog(
-                              content: Text(context.words.confirmRemoveFile(x.name)),
-                              onConfirm: () {
-                                setState(() {
-                                  files.remove(x);
-                                });
+                    if (widget.transaction == null)
+                      _file == null && widget.transaction?.attachmentId == null
+                          ? IconButton.filled(
+                              onPressed: () async {
+                                if (_file != null) {
+                                  context.showInformationDialog(
+                                    content: Text(context.words.toManyFiles),
+                                  );
+                                  return;
+                                }
+                                final FilePickerResult? result = await FilePicker.platform.pickFiles(
+                                  type: FileType.custom,
+                                  allowedExtensions: ['jpg', 'pdf', 'doc'],
+                                );
+                                if (result != null) {
+                                  setState(() {
+                                    _file = result.files.first;
+                                  });
+                                }
                               },
-                            );
-                          },
-                          child: ListTile(
-                            title: Text(x.name, style: context.textTheme.verySmallBold, overflow: .ellipsis),
-                            subtitle: Text(x.size.bytesToMbString(), style: context.textTheme.verySmall),
-                            trailing: IconButton(
+                              icon: const Icon(Icons.attach_file),
+                            )
+                          : IconButton(
                               icon: const Icon(Icons.clear),
                               onPressed: () {
                                 setState(() {
-                                  files.remove(x);
+                                  _file = null;
                                 });
                               },
                             ),
+                    if (_file != null)
+                      Expanded(
+                        child: ListTile(
+                          title: Text(_file!.name, style: context.textTheme.verySmallBold, overflow: .ellipsis),
+                          subtitle: Text(
+                            _file!.size.bytesToMbString(),
+                            style: context.textTheme.verySmall.copyWith(
+                              color: _file!.size > 5 * 1024 * 1024 ? context.colors.error : null,
+                            ),
                           ),
                         ),
-                      )
-                      .toList(),
+                      ),
+                  ],
                 ),
+
                 const Divider(),
                 AppGradientButton(onPressed: _save, label: context.words.save),
               ],
