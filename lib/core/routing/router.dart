@@ -11,6 +11,7 @@ import '../../interfaces/screens/customer/customer_view_model.dart';
 import '../../interfaces/screens/home/home_view.dart';
 import '../../interfaces/screens/home/home_view_model.dart';
 import '../../interfaces/screens/home/transaction_details_view.dart';
+import '../../interfaces/screens/home/transaction_details_view_model.dart';
 import '../../interfaces/screens/monetization/monetization_view.dart';
 import '../../interfaces/screens/monetization/monetization_view_model.dart';
 import '../../interfaces/screens/recurrence/recurrence_view.dart';
@@ -52,6 +53,7 @@ final appRouter = GoRouter(
             listCustomersUseCase: getIt(),
             templateListUseCase: getIt(),
             recurrenceRepository: getIt(),
+            notificationService: getIt(),
           ),
           child: const HomeView(),
         );
@@ -63,12 +65,7 @@ final appRouter = GoRouter(
             final transaction = state.extra as TransactionModel?;
             if (transaction == null) return const SizedBox.shrink(); //TODO erro screen
             return ChangeNotifierProvider(
-              create: (_) => HomeViewModel(
-                repository: getIt(),
-                listCustomersUseCase: getIt(),
-                templateListUseCase: getIt(),
-                recurrenceRepository: getIt(),
-              ),
+              create: (_) => TransactionDetailsViewModel(repository: getIt()),
               child: TransactionDetailsView(transaction: transaction),
             );
           },

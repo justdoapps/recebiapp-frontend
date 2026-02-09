@@ -72,7 +72,7 @@ class TransactionRepositoryImpl with HttpRequestMixin implements TransactionRepo
         if (value.statusCode != 200) return Result.error(StatusCodeFailure());
         _homeTransactionsCached = (value.data['data'] as List).map((e) => TransactionModel.fromMap(e)).toList();
         _hasHomeCache = true;
-        return Result.ok(_homeTransactionsCached);
+        return Result.ok(homeTransactionsCached);
       },
     );
   }

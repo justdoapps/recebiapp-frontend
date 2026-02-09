@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/dependencies.dart';
 import '../../../core/extensions/build_context_extension.dart';
 import '../../../core/extensions/dialog_extension.dart';
 import '../../../core/extensions/message_extension.dart';
 import '../../../core/mixins/loading_mixin.dart';
 import '../../../core/utils/debouncer.dart';
 import '../../../core/utils/throttler.dart';
+import '../../../data/services/notification_service.dart';
 import '../../../domain/enum/transaction_enum.dart';
 import '../../../domain/models/transaction_model.dart';
 import '../../core/adaptive_date_picker.dart';
@@ -182,6 +184,10 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                     FloatingActionButton.extended(
                       heroTag: 'new_transaction',
                       onPressed: () {
+                        // getIt<NotificationService>().showNotification(
+                        //   title: 'Teste',
+                        //   body: 'Teste',
+                        // );
                         context.showBottomSheet(
                           child: Padding(
                             padding: .only(bottom: context.viewInsetsBottom),
@@ -199,12 +205,11 @@ class _HomeViewState extends State<HomeView> with LoadingMixin {
                 ),
                 body: RefreshIndicator(
                   onRefresh: _vm.listTransactions.execute,
-                  child: Selector<HomeViewModel, List<TransactionModel>>(
-                    selector: (_, _) => _vm.filteredTransactions,
-                    builder: (_, filteredTransactions, _) {
+                  child: Consumer<HomeViewModel>(
+                    builder: (_, _, _) {
                       return Column(
                         children: [
-                          Expanded(child: HomeListTransactionsWidget(transactions: filteredTransactions)),
+                          Expanded(child: HomeListTransactionsWidget(transactions: _vm.filteredTransactions)),
                         ],
                       );
                     },

@@ -1,12 +1,11 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
-
 import '../../../core/utils/command.dart';
 import '../../../core/utils/failure.dart';
 import '../../../core/utils/result.dart';
 import '../../../data/repositories/recurrence/recurrence_repository.dart';
 import '../../../data/repositories/transaction/transaction_repository.dart';
+import '../../../data/services/notification_service.dart';
 import '../../../domain/dtos/recurrence_upsert_dto.dart';
 import '../../../domain/dtos/transaction_upsert_dto.dart';
 import '../../../domain/enum/customer_type_enum.dart';
@@ -38,16 +37,19 @@ class HomeViewModel extends ChangeNotifier {
   final ListCustomersUseCase _listCustomersUseCase;
   final TemplateListUseCase _templateListUseCase;
   final RecurrenceRepository _recurrenceRepository;
+  final NotificationService _notificationService;
 
   HomeViewModel({
     required TransactionRepository repository,
     required ListCustomersUseCase listCustomersUseCase,
     required TemplateListUseCase templateListUseCase,
     required RecurrenceRepository recurrenceRepository,
+    required NotificationService notificationService,
   }) : _repository = repository,
        _listCustomersUseCase = listCustomersUseCase,
        _templateListUseCase = templateListUseCase,
-       _recurrenceRepository = recurrenceRepository {
+       _recurrenceRepository = recurrenceRepository,
+       _notificationService = notificationService {
     listTransactions = Command0<void>(_listTransactions);
     listCustomers = Command0<void>(_listCustomers);
     createTransaction = Command1<void, TransactionCreateArgs>(_createTransaction);
@@ -57,6 +59,7 @@ class HomeViewModel extends ChangeNotifier {
     batchUpdateStatus = Command1<void, BatchUpdateStatusArgs>(_batchUpdateStatus);
     listTemplates = Command0<void>(_listTemplates);
     createRecurrence = Command1<void, RecurrenceCreateDto>(_createRecurrence);
+    deleteAttachment = Command1<void, TransactionModel>(_deleteAttachment);
   }
 
   List<TransactionModel> _allTransactions = [];
@@ -121,6 +124,7 @@ class HomeViewModel extends ChangeNotifier {
     (value) {
       _allTransactions.clear();
       _allTransactions = List<TransactionModel>.from(value);
+      _notificationService.scheduleNotifications(_allTransactions);
       filterTransactionsByNameCustomer(name: _filterByNameCustomer);
       return const Result.ok(null);
     },
@@ -211,31 +215,6 @@ class HomeViewModel extends ChangeNotifier {
         },
       );
 
-  Future<Result<void>> _downloadAttachment(TransactionModel transaction) async =>
-      (await _repository.downloadAttachment(
-        idAttachment: transaction.attachmentId!,
-        idTransaction: transaction.id,
-        fileName: transaction.attachmentName!,
-      )).fold(
-        (error) => Result.error(error),
-        (file) {
-          final params = ShareParams(text: transaction.description, files: [XFile(file.path)]);
-          SharePlus.instance.share(params);
-          return const Result.ok(null);
-        },
-      );
-
-  Future<Result<void>> _deleteAttachment(TransactionModel transaction) async =>
-      (await _repository.deleteAttachment(
-        idAttachment: transaction.attachmentId!,
-        idTransaction: transaction.id,
-      )).fold(
-        (error) => Result.error(error),
-        (value) {
-          return const Result.ok(null);
-        },
-      );
-
   Future<Result<void>> _batchUpdateStatus(BatchUpdateStatusArgs args) async =>
       (await _repository.updateBatchStatus(
         ids: args.transactions.map((e) => e.id).toList(),
@@ -253,6 +232,18 @@ class HomeViewModel extends ChangeNotifier {
         },
       );
 
+  late Command1<void, TransactionModel> deleteAttachment;
+  Future<Result<void>> _deleteAttachment(TransactionModel transaction) async =>
+      (await _repository.deleteAttachment(
+        idAttachment: transaction.attachmentId!,
+        idTransaction: transaction.id,
+      )).fold(
+        (error) => Result.error(error),
+        (value) {
+          return const Result.ok(null);
+        },
+      );
+
   @override
   void dispose() {
     listTransactions.dispose();
@@ -262,6 +253,7 @@ class HomeViewModel extends ChangeNotifier {
     deleteTransaction.dispose();
     updateStatus.dispose();
     batchUpdateStatus.dispose();
+    deleteAttachment.dispose();
     super.dispose();
   }
 }

@@ -41,6 +41,7 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
   final _paymentInfoEC = TextEditingController();
   final _customerEC = TextEditingController();
   final FocusNode _customerFN = FocusNode();
+  bool _wasAttachmentDeleted = false;
 
   CustomerModel? _customer;
   DateTime _dueDate = DateTime.now();
@@ -62,7 +63,13 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
       _type = widget.transaction!.type;
       _customer = widget.transaction!.customer;
       _status = widget.transaction!.status;
-      _file = PlatformFile(name: widget.transaction!.attachmentName!, size: widget.transaction!.attachmentSize!);
+      if (widget.transaction!.attachmentId != null) {
+        _file = PlatformFile(
+          name: widget.transaction!.attachmentName ?? '',
+          size: widget.transaction!.attachmentSize ?? 0,
+        );
+        _wasAttachmentDeleted = true;
+      }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _amountEC.text = CurrencyTextInputFormatter.simpleCurrency(locale: context.locale).formatString(
@@ -382,36 +389,39 @@ class _UpsertTransactionComponentState extends State<UpsertTransactionComponent>
                 const Divider(),
                 Row(
                   children: [
-                    if (widget.transaction == null)
-                      _file == null && widget.transaction?.attachmentId == null
-                          ? IconButton.filled(
-                              onPressed: () async {
-                                if (_file != null) {
-                                  context.showInformationDialog(
-                                    content: Text(context.words.toManyFiles),
-                                  );
-                                  return;
-                                }
-                                final FilePickerResult? result = await FilePicker.platform.pickFiles(
-                                  type: FileType.custom,
-                                  allowedExtensions: ['jpg', 'pdf', 'doc'],
+                    _file == null
+                        ? IconButton.filled(
+                            onPressed: () async {
+                              if (_file != null) {
+                                context.showInformationDialog(
+                                  content: Text(context.words.toManyFiles),
                                 );
-                                if (result != null) {
-                                  setState(() {
-                                    _file = result.files.first;
-                                  });
-                                }
-                              },
-                              icon: const Icon(Icons.attach_file),
-                            )
-                          : IconButton(
-                              icon: const Icon(Icons.clear),
-                              onPressed: () {
+                                return;
+                              }
+                              final FilePickerResult? result = await FilePicker.platform.pickFiles(
+                                type: FileType.custom,
+                                allowedExtensions: ['jpg', 'pdf', 'doc'],
+                              );
+                              if (result != null) {
                                 setState(() {
-                                  _file = null;
+                                  _file = result.files.first;
                                 });
-                              },
-                            ),
+                              }
+                            },
+                            icon: const Icon(Icons.attach_file),
+                          )
+                        : IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              setState(() {
+                                _file = null;
+                                if (widget.transaction?.attachmentId != null && _wasAttachmentDeleted) {
+                                  _vm.deleteAttachment.execute(widget.transaction!);
+                                  _wasAttachmentDeleted = false;
+                                }
+                              });
+                            },
+                          ),
                     if (_file != null)
                       Expanded(
                         child: ListTile(

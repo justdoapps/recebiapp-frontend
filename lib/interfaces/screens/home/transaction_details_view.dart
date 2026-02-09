@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/extensions/build_context_extension.dart';
-import '../../../core/extensions/dialog_extension.dart';
 import '../../../core/extensions/formatters_extension.dart';
 import '../../../core/extensions/message_extension.dart';
 import '../../../domain/enum/transaction_enum.dart';
 import '../../../domain/models/transaction_model.dart';
+import '../../core/loader_local.dart';
 import '../customer/lang/customer_localization_ext.dart';
 import 'lang/home_localization_ext.dart';
+import 'transaction_details_view_model.dart';
 
 class TransactionDetailsView extends StatelessWidget {
   const TransactionDetailsView({super.key, required this.transaction});
@@ -20,6 +22,7 @@ class TransactionDetailsView extends StatelessWidget {
     final colorStatus = transaction.status.getStatusColor();
     final isIncome = transaction.type == TransactionType.INCOME;
     final colorType = isIncome ? Colors.green : Colors.orange;
+    final vm = context.read<TransactionDetailsViewModel>();
 
     return Scaffold(
       appBar: AppBar(title: Text(context.words.transactionDetails)),
@@ -123,32 +126,40 @@ class TransactionDetailsView extends StatelessWidget {
 
               const SizedBox(height: 20),
               _buildSectionHeader(context, context.words.attachments),
-              Card(
-                color: context.colors.surfaceContainer,
-                child: transaction.attachmentId != null
-                    ? ListTile(
-                        leading: IconButton.filledTonal(
-                          onPressed: () {
-                            //TODO delete
-                          },
-                          icon: const Icon(Icons.clear),
-                        ),
-                        title: Text(
-                          transaction.attachmentName ?? context.words.noName,
-                          style: context.textTheme.verySmallBold,
-                        ),
-                        subtitle: Text(
-                          transaction.attachmentSize?.bytesToMbString() ?? context.words.noSize,
-                          style: context.textTheme.verySmallBold,
-                        ),
-                        trailing: IconButton.filledTonal(
-                          onPressed: () {
-                            //TODO downlaod file
-                          },
-                          icon: const Icon(Icons.download),
-                        ),
-                      )
-                    : ListTile(title: Text(context.words.noAttachment, style: context.textTheme.smallBold)),
+              ListenableBuilder(
+                listenable: vm.downloadAttachment,
+                builder: (context, child) {
+                  return LoaderLocal(
+                    isLoading: vm.downloadAttachment.running,
+                    child: Card(
+                      color: context.colors.surfaceContainer,
+                      child: transaction.attachmentId != null
+                          ? ListTile(
+                              // leading: IconButton.filledTonal(
+                              //   onPressed: () {
+                              //     vm.deleteAttachment.execute(transaction);
+                              //   },
+                              //   icon: const Icon(Icons.clear),
+                              // ),
+                              title: Text(
+                                transaction.attachmentName ?? context.words.noName,
+                                style: context.textTheme.verySmallBold,
+                              ),
+                              subtitle: Text(
+                                transaction.attachmentSize?.bytesToMbString() ?? context.words.noSize,
+                                style: context.textTheme.verySmallBold,
+                              ),
+                              trailing: IconButton.filledTonal(
+                                onPressed: () {
+                                  vm.downloadAttachment.execute(transaction);
+                                },
+                                icon: const Icon(Icons.download),
+                              ),
+                            )
+                          : ListTile(title: Text(context.words.noAttachment, style: context.textTheme.smallBold)),
+                    ),
+                  );
+                },
               ),
 
               const SizedBox(height: 20),

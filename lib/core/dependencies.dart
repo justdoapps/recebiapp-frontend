@@ -14,6 +14,7 @@ import '../data/repositories/recurrence_template/template_tepository_impl.dart';
 import '../data/repositories/transaction/transaction_repository.dart';
 import '../data/repositories/transaction/transaction_repository_impl.dart';
 import '../data/services/http_service.dart';
+import '../data/services/notification_service.dart';
 import '../data/services/preferences_service.dart';
 import '../domain/use_cases/list_customers_use_case.dart';
 import '../domain/use_cases/recurrence_list_use_case.dart';
@@ -26,6 +27,7 @@ Future<void> initDependencies() async {
   //services
   getIt.registerSingleton(PreferencesService(prefs));
   getIt.registerSingleton(HttpService(getIt()));
+  getIt.registerSingleton(NotificationService());
 
   //repositories
   getIt.registerLazySingleton<AuthRepository>(
